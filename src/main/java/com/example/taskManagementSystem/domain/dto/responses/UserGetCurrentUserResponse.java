@@ -1,0 +1,29 @@
+package com.example.taskManagementSystem.domain.dto.responses;
+import com.example.taskManagementSystem.domain.entities.UserEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
+import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDateTime;
+
+@Data
+@Schema(description = "Ответ на получение текущего пользователя")
+@Builder
+public class UserGetCurrentUserResponse {
+
+    @Schema(description = "Id пользователя", example = "12")
+    private Long id;
+
+    @Schema(description = "Адрес электронной почты", example = "john@gmail.com")
+    private String email;
+
+    @Schema(description = "Роль пользователя", example = "USER")
+    private UserEntity.Role role;
+
+    @Schema(description = "Дата и время регистрации", example = "14.05.2024 19:45")
+    @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm", iso = DateTimeFormat.ISO.DATE_TIME)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:mm")
+    private LocalDateTime registrationDateTime;
+}
