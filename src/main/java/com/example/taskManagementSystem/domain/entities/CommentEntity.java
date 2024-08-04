@@ -25,7 +25,7 @@ public class CommentEntity {
     private long commentId;
 
     @ManyToOne
-    @JoinColumn(name = "author_id", nullable = false)
+    @JoinColumn(name = "author_id", nullable = true)
     @OnDelete(action = OnDeleteAction.SET_NULL)
     private UserEntity author;
 

@@ -2,6 +2,7 @@ package com.example.taskManagementSystem.controllers;
 
 import com.example.taskManagementSystem.domain.dto.TaskDto;
 import com.example.taskManagementSystem.domain.dto.requests.TaskCreateRequest;
+import com.example.taskManagementSystem.domain.dto.requests.TaskStatusUpdateRequest;
 import com.example.taskManagementSystem.domain.dto.requests.TaskUpdateRequest;
 import com.example.taskManagementSystem.domain.entities.TaskEntity;
 import com.example.taskManagementSystem.domain.entities.UserEntity;
@@ -38,7 +39,7 @@ public class TaskController {
     }
 
     @GetMapping(path = "/tasks")
-    public ResponseEntity<List<TaskDto>> getAllTasks(
+    public ResponseEntity<List<TaskDto>> getAllTasksOfCurrentUser(
             @AuthenticationPrincipal UserEntity user,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size,
@@ -62,6 +63,30 @@ public class TaskController {
         return new ResponseEntity<>(queryResult.stream().map(taskMapper::mapToDto).toList(), HttpStatus.OK);
     }
 
+    @GetMapping(path = "/tasks/user/{id}")
+    public ResponseEntity<List<TaskDto>> getAllTasksOfUserById(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "50") int size,
+            @RequestParam(defaultValue = "taskId, asc") String[] sort,
+            @RequestParam(required = false) TaskEntity.Status status,
+            @RequestParam(required = false) TaskEntity.Priority priority) {
+        String sortBy = sort[0];
+        Sort.Direction direction = Sort.Direction.fromString(sort[1]);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        Specification<TaskEntity> specification = Specification.where(null);
+        if (status != null) {
+            specification = specification.and(TaskSpecifications.hasStatus(status));
+        }
+        if (priority != null) {
+            specification = specification.and(TaskSpecifications.hasPriority(priority.ordinal()));
+        }
+
+        List<TaskEntity> queryResult = taskService.getAllTasksByUserId(id, pageable, specification);
+
+        return new ResponseEntity<>(queryResult.stream().map(taskMapper::mapToDto).toList(), HttpStatus.OK);
+    }
+
     @GetMapping(path = "/{id}")
     public ResponseEntity<TaskDto> getTaskById(@PathVariable Long id) {
         Optional<TaskEntity> savedTaskEntity = taskService.getTaskById(id);
@@ -77,10 +102,10 @@ public class TaskController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PatchMapping("{id}/status")
-    @PreAuthorize("@AccessService.canChangeStatus(principal, #id)")
-    public ResponseEntity<TaskDto> patchTaskStatus(@PathVariable long id, @RequestBody TaskEntity.Status newStatus) {
-        Optional<TaskEntity> result = taskService.updateTaskStatus(id, newStatus);
+    @PatchMapping("/status")
+    @PreAuthorize("@AccessService.canChangeStatus(principal, #request.getTaskId())")
+    public ResponseEntity<TaskDto> patchTaskStatus(@RequestBody TaskStatusUpdateRequest request) {
+        Optional<TaskEntity> result = taskService.updateTaskStatus(request.getTaskId(), request.getStatus());
         return result.map(taskEntity -> new ResponseEntity<>(taskMapper.mapToDto(taskEntity), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }

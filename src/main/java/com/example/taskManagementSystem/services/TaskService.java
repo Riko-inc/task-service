@@ -17,6 +17,7 @@ public interface TaskService {
     Optional<TaskEntity> updateTask(TaskUpdateRequest taskUpdateRequest);
     Optional<TaskEntity> getTaskById(long id);
     List<TaskEntity> getAllTasks(UserEntity user, Pageable pageable, Specification<TaskEntity> specification);
+    List<TaskEntity> getAllTasksByUserId(long id, Pageable pageable, Specification<TaskEntity> specification);
     void deleteTaskById(long id);
     Optional<TaskEntity> updateTaskStatus(long taskId, TaskEntity.Status taskStatus);
 }

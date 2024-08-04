@@ -81,8 +81,15 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.findAll(specification, pageable)
                 .getContent()
                 .stream()
-                .filter(task -> Objects.equals(task.getCreatedByUser().getUserId(), user.getUserId()))
+                .filter(task -> Objects.equals(task.getCreatedByUser().getUserId(), user.getUserId()) ||
+                        Objects.equals(task.getAssignedUser().getUserId(), user.getUserId()))
                 .toList();
+    }
+
+    @Override
+    public List<TaskEntity> getAllTasksByUserId(long id, Pageable pageable, Specification<TaskEntity> specification) {
+        UserEntity user = userRepository.findById(id).orElseThrow();
+        return getAllTasks(user, pageable, specification);
     }
 
     @Override
@@ -93,6 +100,7 @@ public class TaskServiceImpl implements TaskService {
         if (taskStatus != null) {
             taskEntity.setStatus(taskStatus);
         }
+        taskRepository.saveAndFlush(taskEntity);
         return Optional.of(taskEntity);
     }
 
