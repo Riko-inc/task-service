@@ -52,6 +52,7 @@ public class TaskEntity {
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
+    @ToString.Exclude
     private List<CommentEntity> comments = new ArrayList<>();
 
     @OneToOne
