@@ -4,6 +4,7 @@ import com.example.taskManagementSystem.domain.dto.requests.TaskCreateRequest;
 import com.example.taskManagementSystem.domain.dto.requests.TaskUpdateRequest;
 import com.example.taskManagementSystem.domain.entities.TaskEntity;
 import com.example.taskManagementSystem.domain.entities.UserEntity;
+import com.example.taskManagementSystem.repositories.CommentRepository;
 import com.example.taskManagementSystem.repositories.TaskRepository;
 import com.example.taskManagementSystem.repositories.UserRepository;
 import com.example.taskManagementSystem.services.TaskService;
@@ -28,10 +29,10 @@ public class TaskServiceImpl implements TaskService {
         TaskEntity taskEntity = TaskEntity.builder()
                 .title(taskRequest.getTitle())
                 .description(taskRequest.getDescription())
-                .endDeadline(taskRequest.getDueToEnd())
+                .dueTo(taskRequest.getDueTo())
                 .priority(taskRequest.getPriority())
                 .createdByUser(user)
-                .assignedUser(userRepository.findByEmail(taskRequest.getAssignedToEmail()).orElse(null))
+                .assignedUser(taskRequest.getAssignedToUserId() == null ? null : userRepository.findById(taskRequest.getAssignedToUserId()).orElse(null))
                 .status(TaskEntity.Status.NEW)
                 .createdDate(LocalDateTime.now())
                 .build();
@@ -47,8 +48,11 @@ public class TaskServiceImpl implements TaskService {
         }
 
         TaskEntity taskEntity = savedTaskEntity.get();
-        if (taskUpdateRequest.getDueToEnd() != null) {
-            taskEntity.setEndDeadline(taskUpdateRequest.getDueToEnd());
+        if (taskUpdateRequest.getDueTo() != null) {
+            taskEntity.setDueTo(taskUpdateRequest.getDueTo());
+        }
+        if (taskUpdateRequest.getAssignedToUserId() != null) {
+            taskEntity.setAssignedUser(userRepository.findById(taskUpdateRequest.getAssignedToUserId()).orElse(null));
         }
         if (taskUpdateRequest.getTitle() != null) {
             taskEntity.setTitle(taskUpdateRequest.getTitle());
@@ -79,6 +83,17 @@ public class TaskServiceImpl implements TaskService {
                 .stream()
                 .filter(task -> Objects.equals(task.getCreatedByUser().getUserId(), user.getUserId()))
                 .toList();
+    }
+
+    @Override
+    public Optional<TaskEntity> updateTaskStatus(long taskId, TaskEntity.Status taskStatus){
+        Optional<TaskEntity> savedTaskEntity = Optional.of(taskRepository.findById(taskId).orElseThrow());
+
+        TaskEntity taskEntity = savedTaskEntity.get();
+        if (taskStatus != null) {
+            taskEntity.setStatus(taskStatus);
+        }
+        return Optional.of(taskEntity);
     }
 
     @Override

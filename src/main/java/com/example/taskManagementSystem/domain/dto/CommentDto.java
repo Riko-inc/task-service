@@ -1,8 +1,8 @@
 package com.example.taskManagementSystem.domain.dto;
-import com.example.taskManagementSystem.domain.entities.UserEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+
 
 import java.time.LocalDateTime;
 
@@ -10,13 +10,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserDto {
-    private Long userId;
-    private String email;
-    private String password;
-    private UserEntity.Role role;
+public class CommentDto {
+    private long commentId;
+    private Long createdByUserId;
+    private long parentTaskId;
+    private String content;
     @Schema(type = "string")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
-    private LocalDateTime registrationDateTime;
-    private boolean isActive;
+    private LocalDateTime createdDate;
 }

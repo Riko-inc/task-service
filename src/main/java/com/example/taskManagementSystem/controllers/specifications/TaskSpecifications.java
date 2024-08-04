@@ -12,9 +12,4 @@ public class TaskSpecifications {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("priority"), priority);
     }
-
-    public static Specification<TaskEntity> hasTag(String tag) {
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.like(root.get("tag"), "%" + tag + "%");
-    }
 }

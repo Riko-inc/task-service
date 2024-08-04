@@ -8,9 +8,9 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-@Schema(description = "Ответ на получение текущего пользователя")
+@Schema(description = "Ответ на обновление текущего пользователя")
 @Builder
-public class UserGetCurrentUserResponse {
+public class UserUpdateResponse {
 
     @Schema(description = "Id пользователя", example = "12")
     private Long id;
@@ -21,7 +21,7 @@ public class UserGetCurrentUserResponse {
     @Schema(description = "Роль пользователя", example = "USER")
     private UserEntity.Role role;
 
-    @Schema(type = "string", description = "Дата и время регистрации", example = "14-05-2024 20:50")
+    @Schema(type="string", description = "Дата и время регистрации", example = "14-05-2024 20:50")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
     private LocalDateTime registrationDateTime;
 }

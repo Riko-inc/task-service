@@ -2,6 +2,7 @@ package com.example.taskManagementSystem.services.impl;
 
 import com.example.taskManagementSystem.domain.dto.requests.UserUpdateRequest;
 import com.example.taskManagementSystem.domain.dto.responses.UserGetCurrentUserResponse;
+import com.example.taskManagementSystem.domain.dto.responses.UserUpdateResponse;
 import com.example.taskManagementSystem.domain.entities.UserEntity;
 import com.example.taskManagementSystem.repositories.UserRepository;
 import com.example.taskManagementSystem.services.UserService;
@@ -45,12 +46,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity update(long userId, UserUpdateRequest userUpdateRequest) {
+    public UserUpdateResponse update(long userId, UserUpdateRequest userUpdateRequest) {
         return userRepository.findById(userId).map(existingUserEntity -> {
             Optional.ofNullable(userUpdateRequest.getEmail()).ifPresent(existingUserEntity::setEmail);
             Optional.ofNullable(userUpdateRequest.getPassword()).ifPresent(pwd -> existingUserEntity.setPassword(passwordEncoder.encode(pwd)));
             userRepository.save(existingUserEntity);
-            return existingUserEntity;
+            return UserUpdateResponse.builder()
+                    .id(existingUserEntity.getUserId())
+                    .role(existingUserEntity.getRole())
+                    .email(existingUserEntity.getEmail())
+                    .registrationDateTime(existingUserEntity.getRegistrationDateTime())
+                    .build();
         }).orElseThrow(() -> new RuntimeException("User does not exist!"));
     }
 

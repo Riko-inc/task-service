@@ -1,6 +1,5 @@
 package com.example.taskManagementSystem.services;
 
-import com.example.taskManagementSystem.domain.dto.TaskDto;
 import com.example.taskManagementSystem.domain.dto.requests.TaskCreateRequest;
 import com.example.taskManagementSystem.domain.dto.requests.TaskUpdateRequest;
 import com.example.taskManagementSystem.domain.entities.TaskEntity;
@@ -19,4 +18,5 @@ public interface TaskService {
     Optional<TaskEntity> getTaskById(long id);
     List<TaskEntity> getAllTasks(UserEntity user, Pageable pageable, Specification<TaskEntity> specification);
     void deleteTaskById(long id);
+    Optional<TaskEntity> updateTaskStatus(long taskId, TaskEntity.Status taskStatus);
 }

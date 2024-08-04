@@ -69,16 +69,24 @@ public class TaskController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping(path = "{id}")
-    @PreAuthorize("@taskAccessService.canChangeTask(principal, #taskUpdateRequest.getTaskId())")
+    @PutMapping
+    @PreAuthorize("@AccessService.canChangeTask(principal, #taskUpdateRequest.getTaskId())")
     public ResponseEntity<TaskDto> updateTask(@RequestBody TaskUpdateRequest taskUpdateRequest) {
         Optional<TaskEntity> result = taskService.updateTask(taskUpdateRequest);
         return result.map(taskEntity -> new ResponseEntity<>(taskMapper.mapToDto(taskEntity), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping(path = "/tasks/{id}")
-    @PreAuthorize("@taskAccessService.canChangeTask(principal, #id)")
+    @PatchMapping("{id}/status")
+    @PreAuthorize("@AccessService.canChangeStatus(principal, #id)")
+    public ResponseEntity<TaskDto> patchTaskStatus(@PathVariable long id, @RequestBody TaskEntity.Status newStatus) {
+        Optional<TaskEntity> result = taskService.updateTaskStatus(id, newStatus);
+        return result.map(taskEntity -> new ResponseEntity<>(taskMapper.mapToDto(taskEntity), HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @DeleteMapping(path = "/{id}")
+    @PreAuthorize("@AccessService.canChangeTask(principal, #id)")
     public ResponseEntity<HttpStatus> deleteTask(@PathVariable long id) {
         taskService.deleteTaskById(id);
         return new ResponseEntity<>(HttpStatus.OK);

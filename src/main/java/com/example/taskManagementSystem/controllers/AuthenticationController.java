@@ -3,9 +3,11 @@ import com.example.taskManagementSystem.domain.dto.requests.UserRefreshTokenRequ
 import com.example.taskManagementSystem.domain.dto.requests.UserSignInRequest;
 import com.example.taskManagementSystem.domain.dto.requests.UserSignUpRequest;
 import com.example.taskManagementSystem.domain.dto.responses.UserJwtAuthenticationResponse;
+import com.example.taskManagementSystem.domain.entities.TaskEntity;
 import com.example.taskManagementSystem.services.AuthenticationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +21,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<UserJwtAuthenticationResponse> register(@RequestBody @Validated UserSignUpRequest request) {
-        return ResponseEntity.ok(service.register(request));
+        return new ResponseEntity<>(service.register(request), HttpStatus.CREATED);
     }
 
     @PostMapping("/authenticate")

@@ -1,5 +1,6 @@
 package com.example.taskManagementSystem.domain.dto.requests;
 import com.example.taskManagementSystem.domain.entities.TaskEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -25,10 +26,11 @@ public class TaskCreateRequest {
     @Schema(description = "Приоритет задачи", example = "LOW", defaultValue = "LOW")
     private TaskEntity.Priority priority = TaskEntity.Priority.LOW;
 
-    @Schema(description = "Почта пользователя, кому назначена задача", example = "not_john@gmail.com")
-    private String assignedToEmail;
+    @Schema(description = "Id пользователя, кому назначена задача", example = "12", nullable = true)
+    private Long assignedToUserId;
 
-    @Schema(description = "Дата дедлайна", example = "14.05.2024")
-    private LocalDateTime DueToEnd;
+    @Schema(type = "string", description = "Дата дедлайна", example = "14-05-2024 20:50")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
+    private LocalDateTime dueTo;
 
 }

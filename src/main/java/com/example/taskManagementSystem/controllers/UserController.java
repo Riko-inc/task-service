@@ -3,6 +3,7 @@ package com.example.taskManagementSystem.controllers;
 import com.example.taskManagementSystem.domain.dto.UserDto;
 import com.example.taskManagementSystem.domain.dto.requests.UserUpdateRequest;
 import com.example.taskManagementSystem.domain.dto.responses.UserGetCurrentUserResponse;
+import com.example.taskManagementSystem.domain.dto.responses.UserUpdateResponse;
 import com.example.taskManagementSystem.domain.entities.UserEntity;
 import com.example.taskManagementSystem.mappers.Mapper;
 import com.example.taskManagementSystem.services.UserService;
@@ -33,9 +34,8 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<UserDto> updateUser(@AuthenticationPrincipal UserEntity user, @RequestBody @Validated UserUpdateRequest userUpdateRequest) {
-        UserEntity savedUserEntity = userService.update(user.getUserId(), userUpdateRequest);
-        return new ResponseEntity<>(userMapper.mapToDto(savedUserEntity), HttpStatus.OK);
+    public ResponseEntity<UserUpdateResponse> updateUser(@AuthenticationPrincipal UserEntity user, @RequestBody @Validated UserUpdateRequest userUpdateRequest) {
+        return ResponseEntity.ok(userService.update(user.getUserId(), userUpdateRequest));
     }
 
 

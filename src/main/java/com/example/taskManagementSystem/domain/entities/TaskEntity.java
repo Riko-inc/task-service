@@ -2,10 +2,14 @@ package com.example.taskManagementSystem.domain.entities;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -16,7 +20,7 @@ import java.time.LocalDateTime;
 @Builder
 @Table(name = "tasks")
 public class TaskEntity {
-    public enum Status { NEW, OVERDUE, COMPLETED, DELETED }
+    public enum Status { NEW, IN_PROGRESS, COMPLETE }
     public enum Priority { LOW, MEDIUM, HIGH }
 
     @Id
@@ -31,7 +35,7 @@ public class TaskEntity {
     private String description;
 
     @JsonFormat(pattern = "dd-MM-yyyy")
-    private LocalDateTime endDeadline;
+    private LocalDateTime dueTo;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -43,15 +47,21 @@ public class TaskEntity {
 
     @ManyToOne
     @JoinColumn(name = "created_by_user_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private UserEntity createdByUser;
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<CommentEntity> comments = new ArrayList<>();
 
     @OneToOne
     @JoinColumn(name = "assigned_to_user_id")
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     private UserEntity assignedUser;
 
     @Column(nullable = false)
     @CreatedDate
     @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm", iso = DateTimeFormat.ISO.DATE_TIME)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
     private LocalDateTime createdDate;
 }
