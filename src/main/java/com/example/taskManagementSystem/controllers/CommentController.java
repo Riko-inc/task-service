@@ -7,6 +7,7 @@ import com.example.taskManagementSystem.domain.entities.UserEntity;
 import com.example.taskManagementSystem.mappers.Mapper;
 import com.example.taskManagementSystem.services.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ public class CommentController {
     private final Mapper<CommentEntity, CommentDto> commentMapper;
 
     @Operation(summary = "Создать комментарий к задаче")
+    @SecurityRequirement(name = "JWT")
     @PostMapping
     public ResponseEntity<CommentDto> createComment(@AuthenticationPrincipal UserEntity user, @RequestBody CommentCreateRequest commentRequest){
         CommentEntity savedCommentEntity = commentService.createComment(user, commentRequest);
@@ -35,6 +37,7 @@ public class CommentController {
     }
 
     @Operation(summary = "Получить все комментарии к задаче по её id")
+    @SecurityRequirement(name = "JWT")
     @GetMapping(path = "/task/{id}")
     public ResponseEntity<List<CommentDto>> getAllCommentsForTask(@PathVariable Long id) {
         List<CommentEntity> commentEntities = commentService.getAllCommentsByTaskId(id);
@@ -42,6 +45,7 @@ public class CommentController {
     }
 
     @Operation(summary = "Получить комментарий по его id")
+    @SecurityRequirement(name = "JWT")
     @GetMapping(path = "/{id}")
     public ResponseEntity<CommentDto> getCommentById(@PathVariable Long id) {
         CommentEntity savedCommentEntity = commentService.getCommentById(id);
@@ -50,6 +54,7 @@ public class CommentController {
     }
 
     @Operation(summary = "Обновить изменить текст комментария")
+    @SecurityRequirement(name = "JWT")
     @PutMapping
     @PreAuthorize("@AccessService.canChangeComment(principal, #commentUpdateRequest.getCommentId())")
     public ResponseEntity<CommentDto> updateComment(@RequestBody CommentUpdateRequest commentUpdateRequest) {
@@ -58,6 +63,7 @@ public class CommentController {
     }
 
     @Operation(summary = "Удалить комментарий")
+    @SecurityRequirement(name = "JWT")
     @DeleteMapping(path = "/{id}")
     @PreAuthorize("@AccessService.canChangeComment(principal, #id)")
     public ResponseEntity<HttpStatus> deleteComment(@PathVariable long id) {

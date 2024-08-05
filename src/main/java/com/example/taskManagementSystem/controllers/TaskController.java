@@ -10,6 +10,7 @@ import com.example.taskManagementSystem.mappers.Mapper;
 import com.example.taskManagementSystem.controllers.specifications.TaskSpecifications;
 import com.example.taskManagementSystem.services.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -35,6 +36,7 @@ public class TaskController {
     private final Mapper<TaskEntity, TaskDto> taskMapper;
 
     @Operation(summary = "Создать новую задачу")
+    @SecurityRequirement(name = "JWT")
     @PostMapping
     public ResponseEntity<TaskDto> createTask(@AuthenticationPrincipal UserEntity user, @RequestBody @Validated TaskCreateRequest taskRequest){
         TaskEntity savedTaskEntity = taskService.createTask(user, taskRequest);
@@ -42,6 +44,7 @@ public class TaskController {
     }
 
     @Operation(summary = "Получить список задач для текущего пользователя (Назначенные ему и созданные им)")
+    @SecurityRequirement(name = "JWT")
     @GetMapping(path = "/tasks")
     public ResponseEntity<List<TaskDto>> getAllTasksOfCurrentUser(
             @AuthenticationPrincipal UserEntity user,
@@ -68,6 +71,7 @@ public class TaskController {
     }
 
     @Operation(summary = "Получить список задач другого пользователя по его id (Назначенные ему и созданные им)")
+    @SecurityRequirement(name = "JWT")
     @GetMapping(path = "/tasks/user/{id}")
     public ResponseEntity<List<TaskDto>> getAllTasksOfUserById(
             @PathVariable Long id,
@@ -93,6 +97,7 @@ public class TaskController {
     }
 
     @Operation(summary = "Получить задачу по её id")
+    @SecurityRequirement(name = "JWT")
     @GetMapping(path = "/{id}")
     public ResponseEntity<TaskDto> getTaskById(@PathVariable Long id) {
         TaskEntity savedTaskEntity = taskService.getTaskById(id);
@@ -101,6 +106,7 @@ public class TaskController {
     }
 
     @Operation(summary = "Изменить задачу")
+    @SecurityRequirement(name = "JWT")
     @PutMapping
     @PreAuthorize("@AccessService.canChangeTask(principal, #taskUpdateRequest.getTaskId())")
     public ResponseEntity<TaskDto> updateTask(@RequestBody @Validated TaskUpdateRequest taskUpdateRequest) {
@@ -109,6 +115,7 @@ public class TaskController {
     }
 
     @Operation(summary = "Изменить статус задачи")
+    @SecurityRequirement(name = "JWT")
     @PatchMapping("/status")
     @PreAuthorize("@AccessService.canChangeStatus(principal, #request.getTaskId())")
     public ResponseEntity<TaskDto> patchTaskStatus(@RequestBody @Validated TaskStatusUpdateRequest request) {
@@ -117,6 +124,7 @@ public class TaskController {
     }
 
     @Operation(summary = "Удалить задачу")
+    @SecurityRequirement(name = "JWT")
     @DeleteMapping(path = "/{id}")
     @PreAuthorize("@AccessService.canChangeTask(principal, #id)")
     public ResponseEntity<HttpStatus> deleteTask(@PathVariable long id) {

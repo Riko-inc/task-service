@@ -9,6 +9,7 @@ import com.example.taskManagementSystem.mappers.Mapper;
 import com.example.taskManagementSystem.services.UserService;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,12 +31,14 @@ public class UserController {
     private final Mapper<UserEntity, UserDto> userMapper;
 
     @Operation(summary = "Получить текущего пользователя")
+    @SecurityRequirement(name = "JWT")
     @GetMapping("/current")
     public ResponseEntity<UserGetCurrentUserResponse> getCurrentUser(@AuthenticationPrincipal UserEntity user) {
         return ResponseEntity.ok(userService.getCurrentUser(user));
     }
 
     @Operation(summary = "Изменить текущего пользователя (почту/пароль)")
+    @SecurityRequirement(name = "JWT")
     @PutMapping
     public ResponseEntity<UserUpdateResponse> updateUser(@AuthenticationPrincipal UserEntity user, @RequestBody @Validated UserUpdateRequest userUpdateRequest) {
         return ResponseEntity.ok(userService.update(user.getUserId(), userUpdateRequest));
@@ -43,6 +46,7 @@ public class UserController {
 
 
     @Operation(summary = "Удалить текущего пользователя")
+    @SecurityRequirement(name = "JWT")
     @DeleteMapping
     public ResponseEntity<HttpStatus> deleteUser(@AuthenticationPrincipal UserEntity user) {
         userService.deleteByEmail(user.getEmail());
@@ -51,6 +55,7 @@ public class UserController {
 
 
     @Operation(summary = "Получить список всех пользователей. Только для администраторов")
+    @SecurityRequirement(name = "JWT")
     @GetMapping(path = "/users")
     @PreAuthorize("hasRole('ADMIN')")
     @Hidden
@@ -60,6 +65,7 @@ public class UserController {
     }
 
     @Operation(summary = "Получить информацию по пользователю. Только для администраторов")
+    @SecurityRequirement(name = "JWT")
     @GetMapping(path = "/users/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @Hidden
