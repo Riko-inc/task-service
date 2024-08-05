@@ -1,7 +1,7 @@
 package com.example.taskManagementSystem.config;
 
-import com.example.taskManagementSystem.exceptions.UnauthorizedException;
 import com.example.taskManagementSystem.repositories.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +22,7 @@ public class ApplicationConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return email -> repository.findByEmail(email)
-                .orElseThrow(() -> new UnauthorizedException("User with given email was not authorized"));
+                .orElseThrow(() -> new EntityNotFoundException("User with given email " + email + " was not authorized"));
     }
 
     @Bean

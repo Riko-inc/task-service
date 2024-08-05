@@ -4,7 +4,7 @@ import com.example.taskManagementSystem.domain.dto.requests.TaskCreateRequest;
 import com.example.taskManagementSystem.domain.dto.requests.TaskUpdateRequest;
 import com.example.taskManagementSystem.domain.entities.TaskEntity;
 import com.example.taskManagementSystem.domain.entities.UserEntity;
-import com.example.taskManagementSystem.repositories.CommentRepository;
+import com.example.taskManagementSystem.exceptions.EntityNotFoundException;
 import com.example.taskManagementSystem.repositories.TaskRepository;
 import com.example.taskManagementSystem.repositories.UserRepository;
 import com.example.taskManagementSystem.services.TaskService;
@@ -40,14 +40,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Optional<TaskEntity> updateTask(TaskUpdateRequest taskUpdateRequest) {
-        Optional<TaskEntity> savedTaskEntity = taskRepository.findById(taskUpdateRequest.getTaskId());
+    public TaskEntity updateTask(TaskUpdateRequest taskUpdateRequest) {
+        TaskEntity taskEntity = taskRepository.findById(taskUpdateRequest.getTaskId())
+                .orElseThrow(() -> new EntityNotFoundException("Задача " + taskUpdateRequest.getTaskId() + " не найдена"));
 
-        if (savedTaskEntity.isEmpty()) {
-            return Optional.empty();
-        }
-
-        TaskEntity taskEntity = savedTaskEntity.get();
         if (taskUpdateRequest.getDueTo() != null) {
             taskEntity.setDueTo(taskUpdateRequest.getDueTo());
         }
@@ -67,13 +63,14 @@ public class TaskServiceImpl implements TaskService {
             taskEntity.setStatus(taskUpdateRequest.getStatus());
         }
         taskRepository.saveAndFlush(taskEntity);
-        return Optional.of(taskEntity);
+        return taskEntity;
     }
 
 
     @Override
-    public Optional<TaskEntity> getTaskById(long id) {
-        return taskRepository.findById(id);
+    public TaskEntity getTaskById(long id) {
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Задача " + id + " не найдена"));
     }
 
     @Override
@@ -88,20 +85,21 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskEntity> getAllTasksByUserId(long id, Pageable pageable, Specification<TaskEntity> specification) {
-        UserEntity user = userRepository.findById(id).orElseThrow();
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Пользователь " + id + " не найден"));
         return getAllTasks(user, pageable, specification);
     }
 
     @Override
-    public Optional<TaskEntity> updateTaskStatus(long taskId, TaskEntity.Status taskStatus){
-        Optional<TaskEntity> savedTaskEntity = Optional.of(taskRepository.findById(taskId).orElseThrow());
+    public TaskEntity updateTaskStatus(long taskId, TaskEntity.Status taskStatus){
+        TaskEntity taskEntity = taskRepository.findById(taskId)
+                .orElseThrow(() -> new EntityNotFoundException("Пользователь " + taskId + " не найден"));
 
-        TaskEntity taskEntity = savedTaskEntity.get();
         if (taskStatus != null) {
             taskEntity.setStatus(taskStatus);
         }
         taskRepository.saveAndFlush(taskEntity);
-        return Optional.of(taskEntity);
+        return taskEntity;
     }
 
     @Override

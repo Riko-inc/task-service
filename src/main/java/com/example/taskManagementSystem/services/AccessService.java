@@ -6,6 +6,7 @@ import com.example.taskManagementSystem.domain.entities.UserEntity;
 import com.example.taskManagementSystem.repositories.CommentRepository;
 import com.example.taskManagementSystem.repositories.TaskRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -13,6 +14,7 @@ import java.util.Optional;
 
 @Service("AccessService")
 @RequiredArgsConstructor
+@Slf4j
 public class AccessService {
 
     private final TaskRepository taskRepository;

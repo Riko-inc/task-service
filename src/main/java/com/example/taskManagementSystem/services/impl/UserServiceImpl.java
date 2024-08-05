@@ -4,6 +4,7 @@ import com.example.taskManagementSystem.domain.dto.requests.UserUpdateRequest;
 import com.example.taskManagementSystem.domain.dto.responses.UserGetCurrentUserResponse;
 import com.example.taskManagementSystem.domain.dto.responses.UserUpdateResponse;
 import com.example.taskManagementSystem.domain.entities.UserEntity;
+import com.example.taskManagementSystem.exceptions.EntityNotFoundException;
 import com.example.taskManagementSystem.repositories.UserRepository;
 import com.example.taskManagementSystem.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -36,13 +37,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserEntity> getById(Long id) {
-        return userRepository.findById(id);
+    public UserEntity getById(Long id) {
+        return userRepository.findById(id).
+                orElseThrow(() -> new EntityNotFoundException("Пользователь " + id + " не найден"));
     }
 
     @Override
-    public Optional<UserEntity> getByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public UserEntity getByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Пользователь c email" + email + " не найден"));
     }
 
     @Override
@@ -57,14 +60,15 @@ public class UserServiceImpl implements UserService {
                     .email(existingUserEntity.getEmail())
                     .registrationDateTime(existingUserEntity.getRegistrationDateTime())
                     .build();
-        }).orElseThrow(() -> new RuntimeException("User does not exist!"));
+        }).orElseThrow(() -> new EntityNotFoundException("Пользователь " + userId + " не найден"));
     }
 
     @Override
     public void deleteByEmail(String email){
-        userRepository.findByEmail(email).ifPresent(userRepository::delete);
+        userRepository.deleteUserEntityByEmail(email);
     }
 
+    @Override
     public UserGetCurrentUserResponse getCurrentUser(UserEntity user) {
         return UserGetCurrentUserResponse.builder()
                 .id(user.getUserId())

@@ -1,7 +1,6 @@
 package com.example.taskManagementSystem.security;
 
-import com.example.taskManagementSystem.exceptions.UnauthorizedException;
-import com.example.taskManagementSystem.domain.entities.TokenRedisEntity;
+import com.example.taskManagementSystem.exceptions.AccessDeniedException;
 import com.example.taskManagementSystem.repositories.TokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -46,11 +45,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String tokenType = jwtService.extractTokenType(jwtToken);
 
         if (StringUtils.isEmpty(tokenType) || tokenType.equals("REFRESH")) {
-            throw new UnauthorizedException("Can not authorize user with refresh token");
+            throw new AccessDeniedException("Can not authorize user with refresh token");
         }
 
         tokenRepository.getByToken(jwtToken)
-                .orElseThrow(() -> new UnauthorizedException("Token has expired or invalid"));
+                .orElseThrow(() -> new AccessDeniedException("Token has expired or invalid"));
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()));
 

@@ -1,5 +1,4 @@
 package com.example.taskManagementSystem.config;
-import com.example.taskManagementSystem.exceptions.FilterChainExceptionHandler;
 import com.example.taskManagementSystem.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -35,7 +34,6 @@ public class WebSecurityConfig {
             "/swagger-resources",
             "/swagger-resources/**",
             "/configuration/ui",
-            "/configuration/security",
             "/swagger-ui/**",
             "/webjars/**",
             "/docs",
@@ -44,18 +42,17 @@ public class WebSecurityConfig {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
     private final LogoutHandler logoutHandler;
-    private final FilterChainExceptionHandler filterChainExceptionHandler;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors((cors) -> cors.configurationSource(apiConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((req) -> req
+                .authorizeHttpRequests(request -> request
                         .requestMatchers(WHITE_LIST_URL).permitAll()
-                        .requestMatchers("/tasks/**").authenticated()
-                        .requestMatchers("/users/**").authenticated()
-                        .anyRequest()
-                        .permitAll())
+                        .requestMatchers("/api/v1/tasks/**").fullyAuthenticated()
+                        .requestMatchers("/api/v1/users/**").fullyAuthenticated()
+                        .requestMatchers("/api/v1/comment/**").fullyAuthenticated()
+                        .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

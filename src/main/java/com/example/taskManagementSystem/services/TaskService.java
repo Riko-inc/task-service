@@ -9,15 +9,14 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public interface TaskService {
     TaskEntity createTask(UserEntity user, TaskCreateRequest taskRequest);
-    Optional<TaskEntity> updateTask(TaskUpdateRequest taskUpdateRequest);
-    Optional<TaskEntity> getTaskById(long id);
+    TaskEntity updateTask(TaskUpdateRequest taskUpdateRequest);
+    TaskEntity getTaskById(long id);
     List<TaskEntity> getAllTasks(UserEntity user, Pageable pageable, Specification<TaskEntity> specification);
     List<TaskEntity> getAllTasksByUserId(long id, Pageable pageable, Specification<TaskEntity> specification);
     void deleteTaskById(long id);
-    Optional<TaskEntity> updateTaskStatus(long taskId, TaskEntity.Status taskStatus);
+    TaskEntity updateTaskStatus(long taskId, TaskEntity.Status taskStatus);
 }

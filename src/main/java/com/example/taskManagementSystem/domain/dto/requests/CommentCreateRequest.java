@@ -8,8 +8,7 @@ import lombok.Data;
 @Schema(description = "Запрос на создание нового комментария")
 public class CommentCreateRequest {
     @Schema(description = "Id задачи", example = "12")
-    @NotNull
-    @NotBlank(message = "Id задачи не может быть пустым")
+    @NotNull(message = "Id задачи не может быть пустым")
     private long taskId;
 
     @Schema(type = "string", description = "Текст комментария", example = "Отличная работа!")

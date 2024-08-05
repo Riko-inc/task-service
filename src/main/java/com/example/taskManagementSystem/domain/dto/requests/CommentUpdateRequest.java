@@ -9,9 +9,8 @@ import lombok.Data;
 @Schema(description = "Запрос на изменение комментария")
 public class CommentUpdateRequest {
     @Schema(description = "Id комментария", example = "12")
-    @NotNull
-    @NotBlank(message = "Id комментария не может быть пустым")
-    private long commentId;
+    @NotNull(message = "Id комментария не может быть пустым")
+    private Long commentId;
 
     @Schema(type = "string", description = "Текст комментария", example = "Отличная работа!")
     @NotNull

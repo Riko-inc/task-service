@@ -4,7 +4,7 @@ import com.example.taskManagementSystem.domain.dto.requests.UserSignInRequest;
 import com.example.taskManagementSystem.domain.dto.requests.UserSignUpRequest;
 import com.example.taskManagementSystem.domain.dto.responses.UserJwtAuthenticationResponse;
 import com.example.taskManagementSystem.domain.entities.UserEntity;
-import com.example.taskManagementSystem.exceptions.UnauthorizedException;
+import com.example.taskManagementSystem.exceptions.AccessDeniedException;
 import com.example.taskManagementSystem.domain.entities.TokenRedisEntity;
 import com.example.taskManagementSystem.repositories.TokenRepository;
 import com.example.taskManagementSystem.security.JwtService;
@@ -41,9 +41,7 @@ public class AuthenticationService {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()));
-        UserEntity user = userService.getByEmail(request.getEmail())
-                .orElseThrow(() -> new UnauthorizedException("User with email " + request.getEmail() + " was not found"));
-
+        UserEntity user = userService.getByEmail(request.getEmail());
         return generateTokenResponse(user);
     }
 
@@ -51,20 +49,18 @@ public class AuthenticationService {
         String oldRefreshToken = request.getRefreshToken();
 
         TokenRedisEntity token = tokenRepository.getByToken(oldRefreshToken)
-                .orElseThrow(() -> new UnauthorizedException("Token is invalid or expired"));
+                .orElseThrow(() -> new AccessDeniedException("Token is invalid or expired"));
 
         if (!token.getTokenType().equals("REFRESH")) {
-            throw new UnauthorizedException("Invalid token type. Expected REFRESH. Found " + token.getTokenType());
+            throw new AccessDeniedException("Invalid token type. Expected REFRESH. Found " + token.getTokenType());
         }
 
         String email = jwtService.extractEmail(oldRefreshToken);
         if (email == null) {
-            throw new UnauthorizedException("Provided refresh token is invalid");
+            throw new AccessDeniedException("Provided refresh token is invalid");
         }
 
-        UserEntity user = userService.getByEmail(email)
-                .orElseThrow(() -> new UnauthorizedException("Holder of token was not found"));
-
+        UserEntity user = userService.getByEmail(email);
         tokenRepository.deleteAllByUserId(user.getUserId().toString());
         return generateTokenResponse(user);
     }

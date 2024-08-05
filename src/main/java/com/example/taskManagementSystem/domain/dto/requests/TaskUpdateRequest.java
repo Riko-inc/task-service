@@ -3,6 +3,7 @@ import com.example.taskManagementSystem.domain.entities.TaskEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Schema(description = "Запрос на создание новой задачи")
 public class TaskUpdateRequest {
     @Schema(description = "Id задачи", example = "12")
-    @NotBlank(message = "Id задачи не может быть пустым")
+    @NotNull(message = "Id задачи не может быть пустым")
     private long taskId;
 
     @Schema(description = "Заголовок задачи", example = "Купить молоко")

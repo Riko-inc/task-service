@@ -55,7 +55,7 @@ public class TaskEntity {
     @ToString.Exclude
     private List<CommentEntity> comments = new ArrayList<>();
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "assigned_to_user_id")
     @OnDelete(action = OnDeleteAction.SET_NULL)
     private UserEntity assignedUser;

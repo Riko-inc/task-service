@@ -5,6 +5,7 @@ import com.example.taskManagementSystem.domain.dto.requests.CommentUpdateRequest
 import com.example.taskManagementSystem.domain.entities.CommentEntity;
 import com.example.taskManagementSystem.domain.entities.TaskEntity;
 import com.example.taskManagementSystem.domain.entities.UserEntity;
+import com.example.taskManagementSystem.exceptions.EntityNotFoundException;
 import com.example.taskManagementSystem.repositories.CommentRepository;
 import com.example.taskManagementSystem.repositories.TaskRepository;
 import com.example.taskManagementSystem.services.CommentService;
@@ -24,7 +25,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentEntity createComment(UserEntity user, CommentCreateRequest commentRequest) {
-        TaskEntity taskEntity = taskRepository.findById(commentRequest.getTaskId()).orElseThrow();
+        TaskEntity taskEntity = taskRepository.findById(commentRequest.getTaskId())
+                .orElseThrow(() -> new EntityNotFoundException("Задача " + commentRequest.getTaskId() + " не найдена"));
         CommentEntity comment = CommentEntity.builder()
                 .task(taskEntity)
                 .content(commentRequest.getContent())
@@ -35,16 +37,18 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Optional<CommentEntity> updateComment(CommentUpdateRequest commentUpdateRequest) {
-        CommentEntity savedComment = commentRepository.findById(commentUpdateRequest.getCommentId()).orElseThrow();
+    public CommentEntity updateComment(CommentUpdateRequest commentUpdateRequest) {
+        CommentEntity savedComment = commentRepository.findById(commentUpdateRequest.getCommentId())
+                .orElseThrow(() -> new EntityNotFoundException("Комментарий " + commentUpdateRequest.getCommentId() + " не найден"));
         savedComment.setContent(commentUpdateRequest.getContent());
         commentRepository.saveAndFlush(savedComment);
-        return Optional.of(savedComment);
+        return savedComment;
     }
 
     @Override
-    public Optional<CommentEntity> getCommentById(long id) {
-        return commentRepository.findById(id);
+    public CommentEntity getCommentById(long id) {
+        return commentRepository.findById(id).
+                orElseThrow(() -> new EntityNotFoundException("Комментарий " + id + " не найден"));
     }
 
     @Override
