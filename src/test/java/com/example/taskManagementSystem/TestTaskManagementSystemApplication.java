@@ -9,7 +9,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
 @TestConfiguration(proxyBeanMethods = false)
-public class TestPlannerApiApplication {
+public class TestTaskManagementSystemApplication {
 
     @Bean
     @ServiceConnection
@@ -24,7 +24,7 @@ public class TestPlannerApiApplication {
     }
 
     public static void main(String[] args) {
-        SpringApplication.from(TaskManagementSystemApplication::main).with(TestPlannerApiApplication.class).run(args);
+        SpringApplication.from(TaskManagementSystemApplication::main).with(TestTaskManagementSystemApplication.class).run(args);
     }
 
 }
