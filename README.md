@@ -29,7 +29,7 @@
 > Стек, использованный для реализации: Java 21, Spring boot 3, Spring JPA, Redis, Web, Security 6, Lombok, Validation, Test, Junit 5, java-jwt + PostgreSQL и Docker
 
 ## Тесты и запуск проекта
-[Ссылка на Postman](https://app.getpostman.com/join-team?invite_code=5f450e6e2ac391dcd3ceac70f6512a59&target_code=13e8c440ec495a813149d8f08b319767) с запросами к API и тестовыми сценариями
+[Ссылка на Postman](https://www.postman.com/interstellar-escape-400559/workspace/management-system-api/overview) с запросами к API и тестовыми сценариями
 
 Для запуска проекта:
 
