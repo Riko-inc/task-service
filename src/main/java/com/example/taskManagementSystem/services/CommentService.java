@@ -12,7 +12,8 @@ import java.util.List;
 public interface CommentService {
     /**
      * Создаёт новый комментарий
-     * @param user Автор комментария
+     *
+     * @param user           Автор комментария
      * @param commentRequest Поля, получаемые при запросе
      * @return CommentEntity, сохранённый в базе данных
      * @see CommentEntity
