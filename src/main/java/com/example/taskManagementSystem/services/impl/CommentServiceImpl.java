@@ -11,6 +11,7 @@ import com.example.taskManagementSystem.repositories.TaskRepository;
 import com.example.taskManagementSystem.services.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,6 +27,7 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
+    @Transactional
     public CommentEntity createComment(UserEntity user, CommentCreateRequest commentRequest) {
         TaskEntity taskEntity = taskRepository.findById(commentRequest.getTaskId())
                 .orElseThrow(() -> new EntityNotFoundException("Задача " + commentRequest.getTaskId() + " не найдена"));
@@ -39,6 +41,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public CommentEntity updateComment(CommentUpdateRequest commentUpdateRequest) {
         CommentEntity savedComment = commentRepository.findById(commentUpdateRequest.getCommentId())
                 .orElseThrow(() -> new EntityNotFoundException("Комментарий " + commentUpdateRequest.getCommentId() + " не найден"));
@@ -48,18 +51,21 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public CommentEntity getCommentById(long id) {
         return commentRepository.findById(id).
                 orElseThrow(() -> new EntityNotFoundException("Комментарий " + id + " не найден"));
     }
 
     @Override
+    @Transactional
     public List<CommentEntity> getAllCommentsByTaskId(long id) {
         TaskEntity task = taskRepository.findById(id).orElseThrow();
         return commentRepository.findAllByTask(task);
     }
 
     @Override
+    @Transactional
     public void deleteCommentById(long id) {
         commentRepository.deleteCommentEntityByCommentId(id);
     }
