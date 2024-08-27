@@ -28,6 +28,11 @@ public class JwtService {
     @Value("${application.security.jwt.refresh-token.expiration}")
     private long jwtRefreshExpiration;
 
+    /**
+     * Создаёт accessToken для пользователя
+     * @param userDetails
+     * @return String готовый JWT токен в формате base64, подписанный приватным ключом
+     */
     public String generateAccessToken(UserDetails userDetails){
         return generateAnyToken(userDetails, jwtExpiration, "ACCESS");
     }

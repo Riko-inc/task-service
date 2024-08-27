@@ -1,4 +1,13 @@
 services:
+  task-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8181:8181"
+    depends_on:
+      - postgres
+      - redis
   postgres:
     image: 'postgres:latest'
     environment:

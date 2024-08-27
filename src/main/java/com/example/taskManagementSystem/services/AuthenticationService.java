@@ -8,6 +8,7 @@ import com.example.taskManagementSystem.exceptions.AccessDeniedException;
 import com.example.taskManagementSystem.domain.entities.TokenRedisEntity;
 import com.example.taskManagementSystem.repositories.TokenRepository;
 import com.example.taskManagementSystem.security.JwtService;
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,6 +16,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * Contains logic for getting JWT tokens
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -28,6 +32,14 @@ public class AuthenticationService {
     @Value("${application.security.jwt.refresh-token.expiration}")
     private long refreshExpTime;
 
+    /**
+     * Регистрирует нового пользователя. Email должен быть уникальным
+     * @param request Данные пользователя, указанные при регистрации
+     * @return UserJwtAuthenticationResponse - пара из access и refresh токенов
+     * @see UserSignUpRequest
+     * @see UserJwtAuthenticationResponse
+     * @throws ValidationException При несоответствии правилам полей
+     */
     public UserJwtAuthenticationResponse register(UserSignUpRequest request) {
         UserEntity user = userService.create(UserEntity.builder()
                 .email(request.getEmail().strip())
@@ -37,6 +49,13 @@ public class AuthenticationService {
         return generateTokenResponse(user);
     }
 
+    /**
+     * Аутентифицирует существующего пользователя в системе и возвращает пару из access и refresh токенов
+     * @param request Данные пользователя, указанные при входе
+     * @return UserJwtAuthenticationResponse - пара из новых access и refresh токенов
+     * @see UserSignInRequest
+     * @see UserJwtAuthenticationResponse
+     */
     public UserJwtAuthenticationResponse authenticate(UserSignInRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -45,6 +64,13 @@ public class AuthenticationService {
         return generateTokenResponse(user);
     }
 
+    /**
+     * Выпускает новую пару access и refresh токенов по входящему refresh токену
+     * @param request Refresh токен, передаваемый в теле запроса
+     * @return UserJwtAuthenticationResponse - пара из новых access и refresh токенов
+     * @see UserRefreshTokenRequest
+     * @see UserJwtAuthenticationResponse
+     */
     public UserJwtAuthenticationResponse refreshToken(UserRefreshTokenRequest request) {
         String oldRefreshToken = request.getRefreshToken();
 

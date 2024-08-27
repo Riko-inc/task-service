@@ -16,6 +16,9 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Contains logic for operations with User Entity
+ */
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
