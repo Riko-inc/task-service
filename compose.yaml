@@ -1,13 +1,28 @@
 services:
+
   task-service:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8181:8181"
+      - "8082:8082"
     depends_on:
       - postgres
       - redis
+      - auth-service
+    environment:
+      - 'AUTH_SERVICE_URL=http://auth-service:8083'
+
+  auth-service:
+    build:
+      context: ../auth-service
+      dockerfile: ../auth-service/Dockerfile
+    ports:
+      - "8083:8083"
+    depends_on:
+      - postgres
+      - redis
+
   postgres:
     image: 'postgres:latest'
     environment:
@@ -18,6 +33,7 @@ services:
       - '5425:5432'
     expose:
       - '5425'
+
   redis:
     image: 'redis:latest'
     ports:
