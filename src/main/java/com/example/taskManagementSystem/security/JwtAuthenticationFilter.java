@@ -1,7 +1,5 @@
 package com.example.taskManagementSystem.security;
 
-import com.example.taskManagementSystem.exceptions.AccessDeniedException;
-import com.example.taskManagementSystem.repositories.TokenRepository;
 import com.example.taskManagementSystem.services.AuthClientService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

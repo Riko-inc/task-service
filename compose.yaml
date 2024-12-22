@@ -1,5 +1,4 @@
 services:
-
   task-service:
     build:
       context: .
@@ -12,6 +11,7 @@ services:
       - auth-service
     environment:
       - 'AUTH_SERVICE_URL=http://auth-service:8083'
+      - 'FILE_SERVICE_URL=http://file-service:8084'
 
   auth-service:
     build:
@@ -22,6 +22,20 @@ services:
     depends_on:
       - postgres
       - redis
+
+  file-service:
+    build:
+      context: ../file-service
+      dockerfile: ../file-service/Dockerfile
+    ports:
+      - "8084:8084"
+    depends_on:
+      - postgres
+      - redis
+      - auth-service
+    environment:
+      - 'TASK_SERVICE_URL=http://task-service:8082'
+      - 'AUTH_SERVICE_URL=http://auth-service:8083'
 
   postgres:
     image: 'postgres:latest'
