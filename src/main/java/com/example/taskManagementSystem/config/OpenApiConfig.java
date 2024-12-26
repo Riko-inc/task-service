@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 
 @OpenAPIDefinition (info = @Info(
         title = "Task management system API",
-        description = "Made for Effective Mobile", version = "1.0.0",
+        description = "Made as research project at TPU", version = "1.0.0",
         contact = @Contact(
                 name = "Михалёв Максим",
                 url = "https://t.me/Handlest"
