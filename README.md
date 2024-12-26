@@ -1,4 +1,5 @@
 # УИРС: Разработка REST API приложения для планирования задач
+[![CI/CD Pipeline](https://github.com/Riko-inc/task-service/actions/workflows/pipeline.yml/badge.svg)](https://github.com/Riko-inc/task-service/actions/workflows/pipeline.yml)
 ## Требования
 - [x] Сервис должен поддерживать аутентификацию и авторизацию пользователей по email и паролю.
 - [x] Доступ к API должен быть аутентифицирован с помощью JWT токена.
