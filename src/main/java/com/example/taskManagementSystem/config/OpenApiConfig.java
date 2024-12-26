@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 
 @OpenAPIDefinition (info = @Info(
-        title = "Task management system API",
+        title = "Task management system core",
         description = "Made as research project at TPU", version = "1.0.0",
         contact = @Contact(
                 name = "Михалёв Максим",
