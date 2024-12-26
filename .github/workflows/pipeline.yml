@@ -66,11 +66,6 @@ jobs:
       - name: Start Application with Docker Compose
         run: docker compose up -d --build
 
-      - name: Wait for Services to Start
-        run: |
-          sleep 30
-          curl -f http://localhost:8082/actuator/health || exit 1
-
       - name: Stop and Clean Up
         if: always()
         run: docker compose down
