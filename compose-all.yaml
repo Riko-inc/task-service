@@ -8,10 +8,12 @@ services:
     depends_on:
       - postgres
       - redis
-      - auth-service
-    environment:
-      - 'AUTH_SERVICE_URL=http://auth-service:8083'
-      - 'FILE_SERVICE_URL=http://file-service:8084'
+    healthcheck:
+      test: "curl --fail --silent localhost:8082/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
 
   auth-service:
     build:
@@ -22,6 +24,12 @@ services:
     depends_on:
       - postgres
       - redis
+    healthcheck:
+      test: "curl --fail --silent localhost:8083/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
 
   file-service:
     build:
@@ -32,10 +40,12 @@ services:
     depends_on:
       - postgres
       - redis
-      - auth-service
-    environment:
-      - 'TASK_SERVICE_URL=http://task-service:8082'
-      - 'AUTH_SERVICE_URL=http://auth-service:8083'
+    healthcheck:
+      test: "curl --fail --silent localhost:8084/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
 
   postgres:
     image: 'postgres:latest'

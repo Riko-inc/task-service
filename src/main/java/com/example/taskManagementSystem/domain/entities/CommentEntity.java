@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "comments")
+@Table(schema = "task-service", name = "comments")
 public class CommentEntity {
 
     @Id
