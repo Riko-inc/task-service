@@ -44,8 +44,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-            chmod 644 /tmp/image.tar
-            ctr images import /tmp/image.tar
-            rm /tmp/image.tar
+            chmod 644 /tmp/github/workspace/image.tar
+            ctr images import /tmp/github/workspace/image.tar
             helm upgrade --install task-service /home/user1/task-service --set image.tag=latest
           debug: true
