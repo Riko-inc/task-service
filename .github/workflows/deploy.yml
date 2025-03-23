@@ -26,6 +26,9 @@ jobs:
       - name: Fix file permissions
         run: chmod 644 $GITHUB_WORKSPACE/image.tar
 
+      - name: Проверка наличия файла image.tar
+        run: ls -lah $GITHUB_WORKSPAimage.tar
+
       - name: Transfer image to server via SCP
         uses: appleboy/scp-action@master
         with:
