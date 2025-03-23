@@ -45,6 +45,6 @@ jobs:
           script: |
             export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
             chmod 644 /tmp/github/workspace/image.tar
-            ctr images import /tmp/github/workspace/image.tar
+            ctr images import /tmp/github/workspace/image.tar --base-name riko-inc/task-service
             helm upgrade --install task-service /home/user1/task-service --set image.tag=latest --set image.repository=riko-inc/task-service
           debug: true
