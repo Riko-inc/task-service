@@ -58,7 +58,7 @@ public class UserController {
     @SecurityRequirement(name = "JWT")
     @GetMapping(path = "/users")
     @PreAuthorize("hasRole('ADMIN')")
-    @Hidden
+//    @Hidden
     public ResponseEntity<List<UserDto>> getAllUsers() {
         List<UserEntity> userEntities = userService.getAll();
         return new ResponseEntity<>(userEntities.stream().map(userMapper::mapToDto).toList(), HttpStatus.OK);
@@ -68,7 +68,7 @@ public class UserController {
     @SecurityRequirement(name = "JWT")
     @GetMapping(path = "/users/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    @Hidden
+//    @Hidden
     public ResponseEntity<UserDto> getUserById(@PathVariable("id") Long id) {
         UserEntity userEntity = userService.getById(id);
         return new ResponseEntity<>(userMapper.mapToDto(userEntity), HttpStatus.OK);

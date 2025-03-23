@@ -21,7 +21,7 @@ import java.util.List;
 @Table(schema = "task-service", name = "tasks")
 public class TaskEntity {
     public enum Status { NEW, IN_PROGRESS, COMPLETE }
-    public enum Priority { LOW, MEDIUM, HIGH }
+    public enum Priority { LOW, MEDIUM, HIGH, DEFAULT }
 
     @Id
     @SequenceGenerator(name = "tasks_seq", sequenceName = "tasks_sequence")
@@ -38,27 +38,24 @@ public class TaskEntity {
     private LocalDateTime dueTo;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Status status = Status.NEW;
+    @Builder.Default
+    private Status status= Status.NEW;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Priority priority = Priority.LOW;
+    @Builder.Default
+    private Priority priority = Priority.DEFAULT;
 
-    @ManyToOne
-    @JoinColumn(name = "created_by_user_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private UserEntity createdByUser;
+    @Column(name = "created_by_user_id")
+    private Long createdByUserId;
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.LAZY)
-    @Builder.Default
     @ToString.Exclude
+    @Builder.Default
     private List<CommentEntity> comments = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "assigned_to_user_id")
-    @OnDelete(action = OnDeleteAction.SET_NULL)
-    private UserEntity assignedUser;
+    @Column(name = "assigned_to_user_id")
+    private Long assignedUserId;
 
     @Column(nullable = false)
     @CreatedDate

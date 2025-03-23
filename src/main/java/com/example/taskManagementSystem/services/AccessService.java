@@ -31,7 +31,7 @@ public class AccessService {
      */
     public boolean canChangeTask(UserEntity userEntity, long taskId) {
         Optional<TaskEntity> task = taskRepository.findById(taskId);
-        return task.isPresent() && Objects.equals(userEntity.getUserId(), task.get().getCreatedByUser().getUserId());
+        return task.isPresent() && Objects.equals(userEntity.getUserId(), task.get().getCreatedByUserId());
     }
 
     /**
@@ -43,8 +43,8 @@ public class AccessService {
      */
     public boolean canChangeStatus(UserEntity userEntity, long taskId) {
         Optional<TaskEntity> task = taskRepository.findById(taskId);
-        return task.isPresent() && (Objects.equals(userEntity.getUserId(), task.get().getCreatedByUser().getUserId()) ||
-                Objects.equals(userEntity.getUserId(), task.get().getAssignedUser().getUserId()));
+        return task.isPresent() && (Objects.equals(userEntity.getUserId(), task.get().getCreatedByUserId()) ||
+                Objects.equals(userEntity.getUserId(), task.get().getAssignedUserId()));
     }
 
     /**

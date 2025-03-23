@@ -26,7 +26,7 @@ public class TaskCreateRequest {
     @Schema(description = "Приоритет задачи", example = "LOW", defaultValue = "LOW")
     private TaskEntity.Priority priority = TaskEntity.Priority.LOW;
 
-    @Schema(description = "Id пользователя, кому назначена задача", example = "12", nullable = true)
+    @Schema(description = "Id пользователя, кому назначена задача", example = "3", nullable = true)
     private Long assignedToUserId;
 
     @Schema(type = "string", description = "Дата дедлайна", example = "14-05-2024 20:50")

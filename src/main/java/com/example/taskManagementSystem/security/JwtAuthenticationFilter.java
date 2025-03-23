@@ -1,5 +1,8 @@
 package com.example.taskManagementSystem.security;
 
+import com.example.taskManagementSystem.domain.dto.responses.UserDetailResponse;
+import com.example.taskManagementSystem.mappers.Mapper;
+import com.example.taskManagementSystem.mappers.impl.UserDetailMapperImpl;
 import com.example.taskManagementSystem.services.AuthClientService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -7,6 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -14,7 +19,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -24,7 +28,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public static final String BEARER_PREFIX = "Bearer ";
     public static final String HEADER_NAME = "Authorization";
     private final AuthClientService authClientService;
-    private final UserDetailsService userDetailsService;
+    private final UserDetailServiceImpl userDetailsService;
+    private final Mapper<UserDetails, UserDetailResponse> mapper;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
@@ -41,10 +46,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String email = authClientService.extractEmail(jwtToken);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(authHeader);
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()));
-
         filterChain.doFilter(request, response);
     }
 }

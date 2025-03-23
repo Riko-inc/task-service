@@ -35,8 +35,8 @@ public class TaskServiceImpl implements TaskService {
                 .description(taskRequest.getDescription())
                 .dueTo(taskRequest.getDueTo())
                 .priority(taskRequest.getPriority())
-                .createdByUser(user)
-                .assignedUser(taskRequest.getAssignedToUserId() == null ? null : userRepository.findById(taskRequest.getAssignedToUserId()).orElse(null))
+                .createdByUserId(user.getUserId())
+                .assignedUserId(taskRequest.getAssignedToUserId())
                 .status(TaskEntity.Status.NEW)
                 .createdDate(LocalDateTime.now())
                 .build();
@@ -53,7 +53,7 @@ public class TaskServiceImpl implements TaskService {
             taskEntity.setDueTo(taskUpdateRequest.getDueTo());
         }
         if (taskUpdateRequest.getAssignedToUserId() != null) {
-            taskEntity.setAssignedUser(userRepository.findById(taskUpdateRequest.getAssignedToUserId()).orElse(null));
+            taskEntity.setAssignedUserId(taskUpdateRequest.getAssignedToUserId());
         }
         if (taskUpdateRequest.getTitle() != null) {
             taskEntity.setTitle(taskUpdateRequest.getTitle());
@@ -85,8 +85,8 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.findAll(specification, pageable)
                 .getContent()
                 .stream()
-                .filter(task -> Objects.equals(task.getCreatedByUser().getUserId(), user.getUserId()) ||
-                        Objects.equals(task.getAssignedUser().getUserId(), user.getUserId()))
+                .filter(task -> Objects.equals(task.getCreatedByUserId(), user.getUserId()) ||
+                        Objects.equals(task.getAssignedUserId(), user.getUserId()))
                 .toList();
     }
 

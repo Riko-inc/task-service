@@ -2,6 +2,7 @@ package com.example.taskManagementSystem.config;
 
 import com.example.taskManagementSystem.exceptions.EntityNotFoundException;
 import com.example.taskManagementSystem.repositories.UserRepository;
+import com.example.taskManagementSystem.security.UserDetailServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
@@ -49,6 +50,5 @@ public class ApplicationConfig {
     public void onAppStart() {
         System.out.println("Documentation for task-service: http://localhost:8082/swagger-ui/index.html#/");
     }
-
 }
 
