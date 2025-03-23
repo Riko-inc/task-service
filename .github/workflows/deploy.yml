@@ -20,14 +20,8 @@ jobs:
         run: |
           docker save riko-inc/task-service:latest -o $GITHUB_WORKSPACE/image.tar && echo "Docker image saved successfully"
 
-      - name: Check saved image
-        run: ls -lah $GITHUB_WORKSPACE/image.tar
-
       - name: Fix file permissions
         run: chmod 644 $GITHUB_WORKSPACE/image.tar
-
-      - name: Check saved image
-        run: ls -lah $GITHUB_WORKSPACE/image.tar
 
       - name: Transfer image to server via SCP
         uses: appleboy/scp-action@master
@@ -49,6 +43,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
+            export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+            chmod 644 /tmp/image.tar
             ctr images import /tmp/image.tar
             helm upgrade --install task-service /home/user1/task-service --set image.tag=latest
           debug: true
