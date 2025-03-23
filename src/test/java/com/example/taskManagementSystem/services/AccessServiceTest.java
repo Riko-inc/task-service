@@ -39,7 +39,7 @@ public class AccessServiceTest {
         userEntity.setUserId(1L);
 
         TaskEntity taskEntity = new TaskEntity();
-        taskEntity.setCreatedByUser(userEntity);
+        taskEntity.setCreatedByUserId(userEntity.getUserId());
 
         when(taskRepository.findById(1L)).thenReturn(Optional.of(taskEntity));
 
@@ -53,8 +53,8 @@ public class AccessServiceTest {
         userEntity.setUserId(1L);
 
         TaskEntity taskEntity = new TaskEntity();
-        taskEntity.setCreatedByUser(userEntity);
-        taskEntity.setAssignedUser(userEntity);
+        taskEntity.setCreatedByUserId(userEntity.getUserId());
+        taskEntity.setAssignedUserId(userEntity.getUserId());
 
         when(taskRepository.findById(1L)).thenReturn(Optional.of(taskEntity));
 
