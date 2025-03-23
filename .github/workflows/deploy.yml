@@ -32,11 +32,10 @@ jobs:
       - name: Transfer image to server via SCP
         uses: appleboy/scp-action@master
         with:
-          host: 82.202.138.236
-          username: 'user1'
-          key: |
-            ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCz9ebQRkYliT8VjoVYDQa2Pdj4Dcdvz2/3GH2v7Fprq/0P8I88CQYO/BHYcgB2fIn0K0HeVCrrKq6UVY5dihNHS3L8w878Zj7sZsLL2DiCX86S/WNWF1tTzpsKC9WfDwvxHGILer/2eF1wAF0RWV7YtlemCzb87e7wLhzP8rlxqxf+6y45ZV6ozQHcfV8HJGrEfp1c1oQyfKgbHcjcJ6sJUi1d78P//+J7EouDsQI48gZxV4o+L6bJNsiGbrrLxHtw8WmWegNOxnjFS8HWIu4hd+Gy/IrAw+MBoT9Atigy+Kv67BGD3wvYJ9TRHVo2ZIh7t4CkfEGQegCAsxoq9UGVW1E4seU+tzG8ZX9FsOQZanz6vjsCExdRuVEFWli78BKvPDEve7ndty3ffEipE+IPWDSmKMcFymlLXu1+wt+bkdumeGtwXZlVhdLWGkCiKSEp3jDuELuHX8H+BAKiyeWEobZZ6PLrHeYi1M/ftF02gVmDT0DMLXPPxTC1Ushx/uM= riko@riko-Nitro-AN515-55
-          port: '12355'
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
           source: "/github/workspace/image.tar"
           target: "/tmp/"
           strip_components: 0
@@ -45,11 +44,10 @@ jobs:
       - name: Deploy on server via SSH
         uses: appleboy/ssh-action@master
         with:
-          host: 82.202.138.236
-          username: 'user1'
-          port: '12355'
-          key: |
-            ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCz9ebQRkYliT8VjoVYDQa2Pdj4Dcdvz2/3GH2v7Fprq/0P8I88CQYO/BHYcgB2fIn0K0HeVCrrKq6UVY5dihNHS3L8w878Zj7sZsLL2DiCX86S/WNWF1tTzpsKC9WfDwvxHGILer/2eF1wAF0RWV7YtlemCzb87e7wLhzP8rlxqxf+6y45ZV6ozQHcfV8HJGrEfp1c1oQyfKgbHcjcJ6sJUi1d78P//+J7EouDsQI48gZxV4o+L6bJNsiGbrrLxHtw8WmWegNOxnjFS8HWIu4hd+Gy/IrAw+MBoT9Atigy+Kv67BGD3wvYJ9TRHVo2ZIh7t4CkfEGQegCAsxoq9UGVW1E4seU+tzG8ZX9FsOQZanz6vjsCExdRuVEFWli78BKvPDEve7ndty3ffEipE+IPWDSmKMcFymlLXu1+wt+bkdumeGtwXZlVhdLWGkCiKSEp3jDuELuHX8H+BAKiyeWEobZZ6PLrHeYi1M/ftF02gVmDT0DMLXPPxTC1Ushx/uM= riko@riko-Nitro-AN515-55
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
           script: |
             ctr images import /tmp/image.tar
             helm upgrade --install task-service /home/user1/task-service --set image.tag=latest
