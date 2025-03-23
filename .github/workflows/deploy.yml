@@ -39,4 +39,4 @@ jobs:
           key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCz9ebQRkYliT8VjoVYDQa2Pdj4Dcdvz2/3GH2v7Fprq/0P8I88CQYO/BHYcgB2fIn0K0HeVCrrKq6UVY5dihNHS3L8w878Zj7sZsLL2DiCX86S/WNWF1tTzpsKC9WfDwvxHGILer/2eF1wAF0RWV7YtlemCzb87e7wLhzP8rlxqxf+6y45ZV6ozQHcfV8HJGrEfp1c1oQyfKgbHcjcJ6sJUi1d78P//+J7EouDsQI48gZxV4o+L6bJNsiGbrrLxHtw8WmWegNOxnjFS8HWIu4hd+Gy/IrAw+MBoT9Atigy+Kv67BGD3wvYJ9TRHVo2ZIh7t4CkfEGQegCAsxoq9UGVW1E4seU+tzG8ZX9FsOQZanz6vjsCExdRuVEFWli78BKvPDEve7ndty3ffEipE+IPWDSmKMcFymlLXu1+wt+bkdumeGtwXZlVhdLWGkCiKSEp3jDuELuHX8H+BAKiyeWEobZZ6PLrHeYi1M/ftF02gVmDT0DMLXPPxTC1Ushx/uM= riko@riko-Nitro-AN515-55"
           script: |
             ctr images import /tmp/image.tar
-            helm upgrade --install task-service /path/to/task-service-chart --set image.tag=latest
+            helm upgrade --install task-service /home/user1/task-service --set image.tag=latest
