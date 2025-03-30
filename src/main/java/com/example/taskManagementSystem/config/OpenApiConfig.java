@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.servers.Server;
 
 @OpenAPIDefinition (servers = {
-        @Server(url = "http://${SERVER_IP:localhost}:${SERVER_HTTP_PORT:server.port}${SWAGGER_PREFIX:}", description = "Server")},
+        @Server(url = "http://${SERVER_IP:localhost}:${SERVER_HTTP_PORT:8082}${SWAGGER_PREFIX:}", description = "Server")},
         info = @Info(
         title = "Task management system core",
         description = "Made as research project at TPU", version = "1.0.0",
