@@ -13,7 +13,7 @@ services:
       interval: 20s
       timeout: 5s
       retries: 5
-      start_period: 40s
+      start_period: 20s
 
   auth-service:
     build:
@@ -29,7 +29,7 @@ services:
       interval: 20s
       timeout: 5s
       retries: 5
-      start_period: 40s
+      start_period: 20s
 
   file-service:
     build:
@@ -45,7 +45,7 @@ services:
       interval: 20s
       timeout: 5s
       retries: 5
-      start_period: 40s
+      start_period: 20s
 
   postgres:
     image: 'postgres:latest'
