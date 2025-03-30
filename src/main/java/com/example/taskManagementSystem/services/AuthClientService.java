@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient(name = "auth-service", url = "http://auth-service:8083/api/v1/auth")
+@FeignClient(name = "auth-service", url = "http://auth-service:${SERVICE_PORT:8083}${AUTH_PREFIX:}/api/v1/auth")
 public interface AuthClientService {
 
     @GetMapping("/check-token")
