@@ -1,9 +1,9 @@
 package com.example.taskManagementSystem.controllers;
 
-import com.example.taskManagementSystem.domain.dto.TaskDto;
 import com.example.taskManagementSystem.domain.dto.requests.TaskCreateRequest;
 import com.example.taskManagementSystem.domain.dto.requests.TaskStatusUpdateRequest;
 import com.example.taskManagementSystem.domain.dto.requests.TaskUpdateRequest;
+import com.example.taskManagementSystem.domain.dto.responses.TaskResponse;
 import com.example.taskManagementSystem.domain.entities.TaskEntity;
 import com.example.taskManagementSystem.domain.entities.UserEntity;
 import com.example.taskManagementSystem.mappers.Mapper;
@@ -28,18 +28,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/task")
+@RequestMapping("api/v1")
 @RequiredArgsConstructor
 @Validated
 @Tag(name = "Работа с задачами")
 public class TaskController {
     private final TaskService taskService;
-    private final Mapper<TaskEntity, TaskDto> taskMapper;
+    private final Mapper<TaskEntity, TaskResponse> taskMapper;
 
     @Operation(summary = "Создать новую задачу")
     @SecurityRequirement(name = "JWT")
-    @PostMapping
-    public ResponseEntity<TaskDto> createTask(@AuthenticationPrincipal UserEntity user, @RequestBody @Valid TaskCreateRequest taskRequest){
+    @PostMapping(path = "/task")
+    public ResponseEntity<TaskResponse> createTask(@AuthenticationPrincipal UserEntity user, @RequestBody @Valid TaskCreateRequest taskRequest){
         TaskEntity savedTaskEntity = taskService.createTask(user, taskRequest);
         return new ResponseEntity<>(taskMapper.mapToDto(savedTaskEntity), HttpStatus.CREATED);
     }
@@ -47,7 +47,8 @@ public class TaskController {
     @Operation(summary = "Получить список задач для текущего пользователя (Назначенные ему и созданные им)")
     @SecurityRequirement(name = "JWT")
     @GetMapping(path = "/tasks")
-    public ResponseEntity<List<TaskDto>> getAllTasksOfCurrentUser(
+    @Deprecated(since = "У нас уже есть эндпоинт, который возвращает задачи пользователя")
+    public ResponseEntity<List<TaskResponse>> getAllTasksOfCurrentUser(
             @AuthenticationPrincipal UserEntity user,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size,
@@ -71,10 +72,10 @@ public class TaskController {
         return new ResponseEntity<>(queryResult.stream().map(taskMapper::mapToDto).toList(), HttpStatus.OK);
     }
 
-    @Operation(summary = "Получить список задач другого пользователя по его id (Назначенные ему и созданные им)")
+    @Operation(summary = "Получить список задач пользователя по userId (Назначенные ему и созданные им)")
     @SecurityRequirement(name = "JWT")
-    @GetMapping(path = "/tasks/user/{id}")
-    public ResponseEntity<List<TaskDto>> getAllTasksOfUserById(
+    @GetMapping(path = "/tasks/{id}")
+    public ResponseEntity<List<TaskResponse>> getAllTasksOfUserById(
             @PathVariable Long id,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size,
@@ -101,8 +102,8 @@ public class TaskController {
 
     @Operation(summary = "Получить задачу по её id")
     @SecurityRequirement(name = "JWT")
-    @GetMapping(path = "/{id}")
-    public ResponseEntity<TaskDto> getTaskById(@PathVariable Long id) {
+    @GetMapping(path = "/task/{id}")
+    public ResponseEntity<TaskResponse> getTaskById(@PathVariable Long id) {
         TaskEntity savedTaskEntity = taskService.getTaskById(id);
         return new ResponseEntity<>(taskMapper.mapToDto(savedTaskEntity), HttpStatus.OK);
 
@@ -110,25 +111,25 @@ public class TaskController {
 
     @Operation(summary = "Изменить задачу")
     @SecurityRequirement(name = "JWT")
-    @PutMapping
+    @PutMapping(path = "/task")
     @PreAuthorize("@AccessService.canChangeTask(principal, #taskUpdateRequest.getTaskId())")
-    public ResponseEntity<TaskDto> updateTask(@RequestBody @Valid TaskUpdateRequest taskUpdateRequest) {
+    public ResponseEntity<TaskResponse> updateTask(@RequestBody @Valid TaskUpdateRequest taskUpdateRequest) {
         TaskEntity taskEntity = taskService.updateTask(taskUpdateRequest);
         return new ResponseEntity<>(taskMapper.mapToDto(taskEntity), HttpStatus.OK);
     }
 
     @Operation(summary = "Изменить статус задачи")
     @SecurityRequirement(name = "JWT")
-    @PatchMapping("/status")
+    @PatchMapping("/task/status")
     @PreAuthorize("@AccessService.canChangeStatus(principal, #request.getTaskId())")
-    public ResponseEntity<TaskDto> patchTaskStatus(@RequestBody @Valid TaskStatusUpdateRequest request) {
+    public ResponseEntity<TaskResponse> patchTaskStatus(@RequestBody @Valid TaskStatusUpdateRequest request) {
         TaskEntity taskEntity = taskService.updateTaskStatus(request.getTaskId(), request.getStatus());
         return new ResponseEntity<>(taskMapper.mapToDto(taskEntity), HttpStatus.OK);
     }
 
     @Operation(summary = "Удалить задачу")
     @SecurityRequirement(name = "JWT")
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(path = "/task/{id}")
     @PreAuthorize("@AccessService.canChangeTask(principal, #id)")
     public ResponseEntity<HttpStatus> deleteTask(@PathVariable long id) {
         taskService.deleteTaskById(id);
