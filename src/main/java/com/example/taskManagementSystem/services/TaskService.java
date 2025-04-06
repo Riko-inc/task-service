@@ -50,13 +50,13 @@ public interface TaskService {
      * Получает список всех задач пользователя - созданных им и тех, которые ему назначены.
      * Поддерживает сортировку по полям:
      *
-     * @param user          UserEntity, которому принадлежат задачи
+     * @param userId          UserEntity, которому принадлежат задачи
      * @param pageable      Объект для пагинции
      * @param specification Объект для применения фильтров и сортировок
      * @return список {@link TaskEntity}, сохранённый в базе данных
      * @see #getAllTasksByUserId(long, Pageable, Specification)
      */
-    List<TaskEntity> getAllTasks(UserEntity user, Pageable pageable, Specification<TaskEntity> specification);
+    List<TaskEntity> getAllTasks(long userId, Pageable pageable, Specification<TaskEntity> specification);
 
 
     //TODO: Доделать сортировки, пагинацию и фильтрацию
@@ -65,13 +65,13 @@ public interface TaskService {
      * Получает список всех задач пользователя - созданных им и тех, которые ему назначены.
      * Поддерживает сортировку по полям:
      *
-     * @param id            UserEntity, которому принадлежат задачи
+     * @param userId            UserEntity, которому принадлежат задачи
      * @param pageable      Объект для пагинции
      * @param specification Объект для применения фильтров и сортировок
      * @return список {@link TaskEntity}, сохранённый в базе данных
-     * @see #getAllTasks(UserEntity, Pageable, Specification)
+     * @see #getAllTasks(long, Pageable, Specification)
      */
-    List<TaskEntity> getAllTasksByUserId(long id, Pageable pageable, Specification<TaskEntity> specification);
+    List<TaskEntity> getAllTasksByUserId(long userId, Pageable pageable, Specification<TaskEntity> specification);
 
 
     /**

@@ -67,7 +67,7 @@ public class TaskController {
             specification = specification.and(TaskSpecifications.hasPriority(priority.ordinal()));
         }
 
-        List<TaskEntity> queryResult = taskService.getAllTasks(user, pageable, specification);
+        List<TaskEntity> queryResult = taskService.getAllTasks(user.getUserId(), pageable, specification);
 
         return new ResponseEntity<>(queryResult.stream().map(taskMapper::mapToDto).toList(), HttpStatus.OK);
     }

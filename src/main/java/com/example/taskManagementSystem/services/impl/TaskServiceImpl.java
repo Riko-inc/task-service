@@ -116,21 +116,19 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    public List<TaskEntity> getAllTasks(UserEntity user, Pageable pageable, Specification<TaskEntity> specification) {
+    public List<TaskEntity> getAllTasks(long userId, Pageable pageable, Specification<TaskEntity> specification) {
         return taskRepository.findAll(specification, pageable)
                 .getContent()
                 .stream()
-                .filter(task -> Objects.equals(task.getCreatedByUserId(), user.getUserId()) ||
-                        Objects.equals(task.getAssignedUserId(), user.getUserId()))
+                .filter(task -> Objects.equals(task.getCreatedByUserId(), userId) ||
+                        Objects.equals(task.getAssignedUserId(), userId))
                 .toList();
     }
 
     @Override
     @Transactional
     public List<TaskEntity> getAllTasksByUserId(long id, Pageable pageable, Specification<TaskEntity> specification) {
-        UserEntity user = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Пользователь " + id + " не найден"));
-        return getAllTasks(user, pageable, specification);
+        return getAllTasks(id, pageable, specification);
     }
 
     @Override
