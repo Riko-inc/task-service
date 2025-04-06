@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/comment")
+@RequestMapping("api/v1")
 @RequiredArgsConstructor
 @Validated
 @Tag(name = "Работа с комментариями")
@@ -31,7 +31,7 @@ public class CommentController {
 
     @Operation(summary = "Создать комментарий к задаче")
     @SecurityRequirement(name = "JWT")
-    @PostMapping
+    @PostMapping(path = "/comment")
     public ResponseEntity<CommentDto> createComment(@AuthenticationPrincipal UserEntity user, @RequestBody @Valid CommentCreateRequest commentRequest){
         CommentEntity savedCommentEntity = commentService.createComment(user, commentRequest);
         return new ResponseEntity<>(commentMapper.mapToDto(savedCommentEntity), HttpStatus.CREATED);
@@ -39,7 +39,7 @@ public class CommentController {
 
     @Operation(summary = "Получить все комментарии к задаче по её id")
     @SecurityRequirement(name = "JWT")
-    @GetMapping(path = "/task/{id}")
+    @GetMapping(path = "/comments/{id}")
     public ResponseEntity<List<CommentDto>> getAllCommentsForTask(@PathVariable Long id) {
         List<CommentEntity> commentEntities = commentService.getAllCommentsByTaskId(id);
         return new ResponseEntity<>(commentEntities.stream().map(commentMapper::mapToDto).toList(), HttpStatus.OK);
@@ -47,7 +47,7 @@ public class CommentController {
 
     @Operation(summary = "Получить комментарий по его id")
     @SecurityRequirement(name = "JWT")
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/comment/{id}")
     public ResponseEntity<CommentDto> getCommentById(@PathVariable Long id) {
         CommentEntity savedCommentEntity = commentService.getCommentById(id);
         return new ResponseEntity<>(commentMapper.mapToDto(savedCommentEntity), HttpStatus.OK);
@@ -56,7 +56,7 @@ public class CommentController {
 
     @Operation(summary = "Обновить изменить текст комментария")
     @SecurityRequirement(name = "JWT")
-    @PutMapping
+    @PutMapping(path = "/comment")
     @PreAuthorize("@AccessService.canChangeComment(principal, #commentUpdateRequest.getCommentId())")
     public ResponseEntity<CommentDto> updateComment(@RequestBody @Valid CommentUpdateRequest commentUpdateRequest) {
         CommentEntity commentEntity = commentService.updateComment(commentUpdateRequest);
@@ -65,7 +65,7 @@ public class CommentController {
 
     @Operation(summary = "Удалить комментарий")
     @SecurityRequirement(name = "JWT")
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(path = "/comment/{id}")
     @PreAuthorize("@AccessService.canChangeComment(principal, #id)")
     public ResponseEntity<HttpStatus> deleteComment(@PathVariable long id) {
         commentService.deleteCommentById(id);
