@@ -46,7 +46,7 @@ public class TaskController {
 
     @Operation(summary = "Получить список задач для текущего пользователя (Назначенные ему и созданные им)")
     @SecurityRequirement(name = "JWT")
-    @GetMapping(path = "/tasks")
+    @GetMapping(path = "/task/tasks")
     @Deprecated(since = "У нас уже есть эндпоинт, который возвращает задачи пользователя")
     public ResponseEntity<List<TaskResponse>> getAllTasksOfCurrentUser(
             @AuthenticationPrincipal UserEntity user,
