@@ -5,8 +5,10 @@ import com.example.taskManagementSystem.domain.dto.requests.TaskUpdateRequest;
 import com.example.taskManagementSystem.domain.entities.TaskEntity;
 import com.example.taskManagementSystem.domain.entities.UserEntity;
 import com.example.taskManagementSystem.exceptions.EntityNotFoundException;
+import com.example.taskManagementSystem.exceptions.InvalidRequestParameterException;
 import com.example.taskManagementSystem.repositories.TaskRepository;
 import com.example.taskManagementSystem.repositories.UserRepository;
+import com.example.taskManagementSystem.services.AuthClientService;
 import com.example.taskManagementSystem.services.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,10 +30,25 @@ import java.util.Objects;
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
+    private final AuthClientService authService;
 
     @Override
     @Transactional
     public TaskEntity createTask(UserEntity user, TaskCreateRequest taskRequest) {
+        if (EnumSet.allOf(TaskEntity.Priority.class).stream()
+                .noneMatch(e -> e.equals(taskRequest.getPriority()))) {
+            throw new InvalidRequestParameterException("Priority should be one of the given: " + Arrays.toString(TaskEntity.Priority.values()));
+        }
+
+        if (EnumSet.allOf(TaskEntity.Status.class).stream()
+                .noneMatch(e -> e.equals(taskRequest.getStatus()))) {
+            throw new InvalidRequestParameterException("Status should be one of the given: " + Arrays.toString(TaskEntity.Status.values()));
+        }
+
+        if (!authService.checkUserIdExists(taskRequest.getAssignedToUserId())) {
+            throw new EntityNotFoundException("Assigned user with id " + taskRequest.getAssignedToUserId() + " was not found");
+        }
+
         TaskEntity taskEntity = TaskEntity.builder()
                 .title(taskRequest.getTitle())
                 .description(taskRequest.getDescription())
@@ -48,6 +67,22 @@ public class TaskServiceImpl implements TaskService {
     public TaskEntity updateTask(TaskUpdateRequest taskUpdateRequest) {
         TaskEntity taskEntity = taskRepository.findById(taskUpdateRequest.getTaskId())
                 .orElseThrow(() -> new EntityNotFoundException("Задача " + taskUpdateRequest.getTaskId() + " не найдена"));
+
+        if (EnumSet.allOf(TaskEntity.Priority.class).stream()
+                .noneMatch(e -> e.equals(taskUpdateRequest.getPriority()))) {
+            throw new InvalidRequestParameterException("Priority should be one of the given: " + Arrays.toString(TaskEntity.Priority.values()));
+        }
+
+        if (EnumSet.allOf(TaskEntity.Status.class).stream()
+                .noneMatch(e -> e.equals(taskUpdateRequest.getStatus()))) {
+            throw new InvalidRequestParameterException("Status should be one of the given: " + Arrays.toString(TaskEntity.Status.values()));
+        }
+
+        if (!authService.checkUserIdExists(taskUpdateRequest.getAssignedToUserId())) {
+            throw new EntityNotFoundException("Assigned user with id " + taskUpdateRequest.getAssignedToUserId() + " was not found");
+        }
+
+
 
         if (taskUpdateRequest.getDueTo() != null) {
             taskEntity.setDueTo(taskUpdateRequest.getDueTo());
@@ -101,12 +136,14 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public TaskEntity updateTaskStatus(long taskId, TaskEntity.Status taskStatus){
-        TaskEntity taskEntity = taskRepository.findById(taskId)
-                .orElseThrow(() -> new EntityNotFoundException("Пользователь " + taskId + " не найден"));
-
-        if (taskStatus != null) {
-            taskEntity.setStatus(taskStatus);
+        if (EnumSet.allOf(TaskEntity.Status.class).stream()
+                .noneMatch(e -> e.equals(taskStatus))) {
+            throw new InvalidRequestParameterException("Status should be one of the given: " + Arrays.toString(TaskEntity.Status.values()));
         }
+        TaskEntity taskEntity = taskRepository.findById(taskId)
+                .orElseThrow(() -> new EntityNotFoundException("Задача с заданным id " + taskId + " не найдена"));
+
+        taskEntity.setStatus(taskStatus);
         taskRepository.saveAndFlush(taskEntity);
         return taskEntity;
     }

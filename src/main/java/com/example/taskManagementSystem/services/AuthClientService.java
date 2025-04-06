@@ -14,9 +14,12 @@ public interface AuthClientService {
     @GetMapping("/extract-email")
     String extractEmail(@RequestHeader("Authorization") String token);
 
-    @GetMapping("details")
+    @GetMapping("/details")
     UserDetailResponse getUserDetail(@RequestHeader("Authorization") String token);
 
-    @GetMapping("check-email")
+    @GetMapping("/check-email")
     UserEntity checkEmail(@RequestHeader("Email") String email);
+
+    @GetMapping("/check-id")
+    Boolean checkUserIdExists(@RequestHeader("Id") Long userId);
 }

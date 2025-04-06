@@ -25,7 +25,7 @@ public class TaskDto {
     private LocalDateTime dueTo;
     private TaskEntity.Status status;
     private TaskEntity.Priority priority;
-    private List<CommentDto> comments;
+    private List<CommentDto> comments; // TODO: Убрать из ответа на getTasks, выделив отдельную responce DTO (dev-56)
     @Schema(type = "string")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
     private LocalDateTime createdDate;
