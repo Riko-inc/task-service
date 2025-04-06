@@ -18,7 +18,6 @@ public class TaskUpdateRequest {
 
     @Schema(description = "Заголовок задачи", example = "Купить молоко")
     @Size(max = 60, message = "Заголовок должен быть не длиннее 60 символов")
-    @NotBlank(message = "Название задачи не может быть пустым")
     private String title;
 
     @Schema(description = "Описание задачи", example = "Бренд: домик в деревне, главное не перепутать!")
