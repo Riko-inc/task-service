@@ -9,6 +9,7 @@ import com.example.taskManagementSystem.services.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class CommentController {
     @Operation(summary = "Создать комментарий к задаче")
     @SecurityRequirement(name = "JWT")
     @PostMapping
-    public ResponseEntity<CommentDto> createComment(@AuthenticationPrincipal UserEntity user, @RequestBody CommentCreateRequest commentRequest){
+    public ResponseEntity<CommentDto> createComment(@AuthenticationPrincipal UserEntity user, @RequestBody @Valid CommentCreateRequest commentRequest){
         CommentEntity savedCommentEntity = commentService.createComment(user, commentRequest);
         return new ResponseEntity<>(commentMapper.mapToDto(savedCommentEntity), HttpStatus.CREATED);
     }
@@ -57,7 +58,7 @@ public class CommentController {
     @SecurityRequirement(name = "JWT")
     @PutMapping
     @PreAuthorize("@AccessService.canChangeComment(principal, #commentUpdateRequest.getCommentId())")
-    public ResponseEntity<CommentDto> updateComment(@RequestBody CommentUpdateRequest commentUpdateRequest) {
+    public ResponseEntity<CommentDto> updateComment(@RequestBody @Valid CommentUpdateRequest commentUpdateRequest) {
         CommentEntity commentEntity = commentService.updateComment(commentUpdateRequest);
         return new ResponseEntity<>(commentMapper.mapToDto(commentEntity), HttpStatus.OK);
     }

@@ -12,6 +12,7 @@ import com.example.taskManagementSystem.services.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,7 +39,7 @@ public class TaskController {
     @Operation(summary = "Создать новую задачу")
     @SecurityRequirement(name = "JWT")
     @PostMapping
-    public ResponseEntity<TaskDto> createTask(@AuthenticationPrincipal UserEntity user, @RequestBody @Validated TaskCreateRequest taskRequest){
+    public ResponseEntity<TaskDto> createTask(@AuthenticationPrincipal UserEntity user, @RequestBody @Valid TaskCreateRequest taskRequest){
         TaskEntity savedTaskEntity = taskService.createTask(user, taskRequest);
         return new ResponseEntity<>(taskMapper.mapToDto(savedTaskEntity), HttpStatus.CREATED);
     }
@@ -84,9 +85,11 @@ public class TaskController {
         Sort.Direction direction = Sort.Direction.fromString(sort[1]);
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
         Specification<TaskEntity> specification = Specification.where(null);
+
         if (status != null) {
             specification = specification.and(TaskSpecifications.hasStatus(status));
         }
+
         if (priority != null) {
             specification = specification.and(TaskSpecifications.hasPriority(priority.ordinal()));
         }
@@ -109,7 +112,7 @@ public class TaskController {
     @SecurityRequirement(name = "JWT")
     @PutMapping
     @PreAuthorize("@AccessService.canChangeTask(principal, #taskUpdateRequest.getTaskId())")
-    public ResponseEntity<TaskDto> updateTask(@RequestBody @Validated TaskUpdateRequest taskUpdateRequest) {
+    public ResponseEntity<TaskDto> updateTask(@RequestBody @Valid TaskUpdateRequest taskUpdateRequest) {
         TaskEntity taskEntity = taskService.updateTask(taskUpdateRequest);
         return new ResponseEntity<>(taskMapper.mapToDto(taskEntity), HttpStatus.OK);
     }
@@ -118,7 +121,7 @@ public class TaskController {
     @SecurityRequirement(name = "JWT")
     @PatchMapping("/status")
     @PreAuthorize("@AccessService.canChangeStatus(principal, #request.getTaskId())")
-    public ResponseEntity<TaskDto> patchTaskStatus(@RequestBody @Validated TaskStatusUpdateRequest request) {
+    public ResponseEntity<TaskDto> patchTaskStatus(@RequestBody @Valid TaskStatusUpdateRequest request) {
         TaskEntity taskEntity = taskService.updateTaskStatus(request.getTaskId(), request.getStatus());
         return new ResponseEntity<>(taskMapper.mapToDto(taskEntity), HttpStatus.OK);
     }
