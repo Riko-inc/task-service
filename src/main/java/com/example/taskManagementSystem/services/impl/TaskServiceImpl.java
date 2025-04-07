@@ -45,7 +45,7 @@ public class TaskServiceImpl implements TaskService {
             throw new InvalidRequestParameterException("Status should be one of the given: " + Arrays.toString(TaskEntity.Status.values()));
         }
 
-        if (!authService.checkUserIdExists(taskRequest.getAssignedToUserId())) {
+        if (taskRequest.getAssignedToUserId() != null && !authService.checkUserIdExists(taskRequest.getAssignedToUserId())) {
             throw new EntityNotFoundException("Assigned user with id " + taskRequest.getAssignedToUserId() + " was not found");
         }
 
@@ -78,11 +78,9 @@ public class TaskServiceImpl implements TaskService {
             throw new InvalidRequestParameterException("Status should be one of the given: " + Arrays.toString(TaskEntity.Status.values()));
         }
 
-        if (!authService.checkUserIdExists(taskUpdateRequest.getAssignedToUserId())) {
+        if (taskUpdateRequest.getAssignedToUserId() != null && !authService.checkUserIdExists(taskUpdateRequest.getAssignedToUserId())) {
             throw new EntityNotFoundException("Assigned user with id " + taskUpdateRequest.getAssignedToUserId() + " was not found");
         }
-
-
 
         if (taskUpdateRequest.getDueTo() != null) {
             taskEntity.setDueTo(taskUpdateRequest.getDueTo());
