@@ -1,0 +1,15 @@
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- %highlight раскрашивает лог-сообщения в зависимости от уровня -->
+            <pattern>%d{HH:mm:ss} [%thread] %-5level %highlight\(%logger{36}.%M\(%line\)\) - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <!-- Включаем сбор информации о местоположении -->
+        <includeLocation>true</includeLocation>
+    </appender>
+
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>

@@ -31,6 +31,9 @@ public class AccessService {
      */
     public boolean canChangeTask(UserEntity userEntity, long taskId) {
         Optional<TaskEntity> task = taskRepository.findById(taskId);
+        log.debug("Task found: {}", task);
+        log.debug("UserId: {}", userEntity.getUserId());
+        log.debug("Can change task: {}", task.isPresent() && Objects.equals(userEntity.getUserId(), task.get().getCreatedByUserId()));
         return task.isPresent() && Objects.equals(userEntity.getUserId(), task.get().getCreatedByUserId());
     }
 

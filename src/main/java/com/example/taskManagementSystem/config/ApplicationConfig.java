@@ -4,6 +4,7 @@ import com.example.taskManagementSystem.exceptions.EntityNotFoundException;
 import com.example.taskManagementSystem.repositories.UserRepository;
 import com.example.taskManagementSystem.security.UserDetailServiceImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,12 +19,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @RequiredArgsConstructor
+@Slf4j
 public class ApplicationConfig {
 
     private final UserRepository repository;
 
     @Bean
     public UserDetailsService userDetailsService() {
+        log.warn("UserDetailsService, which is deprecated is used");
         return email -> repository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User with given email " + email + " was not authorized"));
     }

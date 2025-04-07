@@ -31,7 +31,6 @@ public class TaskEntity {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
     private String description;
 
     @JsonFormat(pattern = "dd-MM-yyyy")

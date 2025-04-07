@@ -22,8 +22,8 @@ public class TaskCreateRequest {
     @Schema(description = "Статус задачи", example = "NEW", defaultValue = "NEW")
     private TaskEntity.Status status = TaskEntity.Status.NEW;
 
-    @Schema(description = "Приоритет задачи", example = "LOW", defaultValue = "LOW")
-    private TaskEntity.Priority priority = TaskEntity.Priority.LOW;
+    @Schema(description = "Приоритет задачи", example = "LOW", defaultValue = "DEFAULT")
+    private TaskEntity.Priority priority = TaskEntity.Priority.DEFAULT;
 
     @Schema(description = "Id пользователя, кому назначена задача", example = "3", nullable = true)
     private Long assignedToUserId;

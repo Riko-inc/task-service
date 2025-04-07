@@ -44,34 +44,6 @@ public class TaskController {
         return new ResponseEntity<>(taskMapper.mapToDto(savedTaskEntity), HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Получить список задач для текущего пользователя (Назначенные ему и созданные им)")
-    @SecurityRequirement(name = "JWT")
-    @GetMapping(path = "/task/tasks")
-    @Deprecated(since = "У нас уже есть эндпоинт, который возвращает задачи пользователя")
-    public ResponseEntity<List<TaskResponse>> getAllTasksOfCurrentUser(
-            @AuthenticationPrincipal UserEntity user,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "50") int size,
-            @RequestParam(defaultValue = "taskId, asc") String[] sort,
-            @RequestParam(required = false) TaskEntity.Status status,
-            @RequestParam(required = false) TaskEntity.Priority priority) {
-        String sortBy = sort[0];
-        Sort.Direction direction = Sort.Direction.fromString(sort[1]);
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-        Specification<TaskEntity> specification = Specification.where(null);
-        if (status != null) {
-            specification = specification.and(TaskSpecifications.hasStatus(status));
-        }
-
-        if (priority != null) {
-            specification = specification.and(TaskSpecifications.hasPriority(priority.ordinal()));
-        }
-
-        List<TaskEntity> queryResult = taskService.getAllTasks(user.getUserId(), pageable, specification);
-
-        return new ResponseEntity<>(queryResult.stream().map(taskMapper::mapToDto).toList(), HttpStatus.OK);
-    }
-
     @Operation(summary = "Получить список задач пользователя по userId (Назначенные ему и созданные им)")
     @SecurityRequirement(name = "JWT")
     @GetMapping(path = "/tasks/{id}")

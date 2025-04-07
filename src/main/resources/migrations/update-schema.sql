@@ -18,7 +18,7 @@ CREATE TABLE "task-service".tasks
 (
     task_id             BIGINT                      NOT NULL PRIMARY KEY ,
     title               VARCHAR(255)                NOT NULL,
-    description         VARCHAR(255)                NOT NULL,
+    description         VARCHAR(255),
     due_to              TIMESTAMP WITHOUT TIME ZONE,
     status              VARCHAR(255),
     priority            VARCHAR(255)                NOT NULL,
