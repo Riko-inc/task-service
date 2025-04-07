@@ -21,7 +21,6 @@ public class TaskUpdateRequest {
     private String title;
 
     @Schema(description = "Описание задачи", example = "Бренд: домик в деревне, главное не перепутать!")
-    @NotBlank(message = "Описание задачи не может быть пустым")
     private String description;
 
     @Schema(description = "Статус задачи", example = "NEW", defaultValue = "NEW")
