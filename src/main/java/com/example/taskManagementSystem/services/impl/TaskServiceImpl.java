@@ -55,7 +55,7 @@ public class TaskServiceImpl implements TaskService {
                 .priority(taskRequest.getPriority())
                 .createdByUserId(user.getUserId())
                 .assignedUserId(taskRequest.getAssignedToUserId())
-                .status(TaskEntity.Status.NEW)
+                .status(taskRequest.getStatus())
                 .createdDate(LocalDateTime.now())
                 .build();
         return taskRepository.save(taskEntity);
