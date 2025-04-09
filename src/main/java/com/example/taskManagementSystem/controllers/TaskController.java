@@ -64,7 +64,7 @@ public class TaskController {
         }
 
         if (priority != null) {
-            specification = specification.and(TaskSpecifications.hasPriority(priority.ordinal()));
+            specification = specification.and(TaskSpecifications.hasPriority(priority));
         }
 
         List<TaskEntity> queryResult = taskService.getAllTasksByUserId(id, pageable, specification);

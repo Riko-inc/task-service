@@ -8,8 +8,8 @@ public class TaskSpecifications {
                 builder.equal(root.get("status"), status.toString());
     }
 
-    public static Specification<TaskEntity> hasPriority(int priority) {
+    public static Specification<TaskEntity> hasPriority(TaskEntity.Priority priority) {
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("priority"), priority);
+                criteriaBuilder.equal(root.get("priority"), priority.toString());
     }
 }
