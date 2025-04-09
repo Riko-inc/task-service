@@ -29,7 +29,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
-    private final UserRepository userRepository;
     private final AuthClientService authService;
 
     @Override
