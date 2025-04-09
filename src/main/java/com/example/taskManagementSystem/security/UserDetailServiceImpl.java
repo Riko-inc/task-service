@@ -20,7 +20,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String token) {
-        UserDetailResponse response = authClientService.getUserDetail(token);
+        UserDetailResponse response = authClientService.getUserDetail();
         return UserEntity
                 .builder()
                 .role(response.getAuthorities())

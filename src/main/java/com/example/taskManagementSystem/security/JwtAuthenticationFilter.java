@@ -41,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String jwtToken = authHeader.substring(BEARER_PREFIX.length());
-        if (StringUtils.isBlank(jwtToken) || !authClientService.validateToken(jwtToken)) {
+        if (StringUtils.isBlank(jwtToken) || !authClientService.validateToken()) {
             filterChain.doFilter(request, response);
             return;
         }
