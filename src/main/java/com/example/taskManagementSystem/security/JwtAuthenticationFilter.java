@@ -33,7 +33,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public static final String HEADER_NAME = "Authorization";
     private final AuthClientService authClientService;
     private final UserDetailServiceImpl userDetailsService;
-    private final Mapper<UserDetails, UserDetailResponse> mapper;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
@@ -47,8 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             String jwtToken = authHeader.substring(BEARER_PREFIX.length());
             if (StringUtils.isBlank(jwtToken) || !authClientService.validateToken()) {
-                filterChain.doFilter(request, response);
-                return;
+                throw new AccessDeniedException("Provided token is invalid/expired or blank");
             }
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(authHeader);
