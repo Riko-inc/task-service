@@ -1,5 +1,6 @@
 package com.example.taskManagementSystem.services.impl;
 
+import com.example.taskManagementSystem.controllers.specifications.TaskSpecifications;
 import com.example.taskManagementSystem.domain.dto.requests.TaskCreateRequest;
 import com.example.taskManagementSystem.domain.dto.requests.TaskUpdateRequest;
 import com.example.taskManagementSystem.domain.entities.TaskEntity;
@@ -114,12 +115,8 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public List<TaskEntity> getAllTasks(long userId, Pageable pageable, Specification<TaskEntity> specification) {
-        return taskRepository.findAll(specification, pageable)
-                .getContent()
-                .stream()
-                .filter(task -> Objects.equals(task.getCreatedByUserId(), userId) ||
-                        Objects.equals(task.getAssignedUserId(), userId))
-                .toList();
+        specification = specification.and(TaskSpecifications.ownedOrAssignedToUser(userId));
+        return taskRepository.findAll(specification, pageable).getContent();
     }
 
     @Override

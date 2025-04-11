@@ -12,4 +12,12 @@ public class TaskSpecifications {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("priority"), priority.toString());
     }
+
+    public static Specification<TaskEntity> ownedOrAssignedToUser(long userId) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.or(
+                        criteriaBuilder.equal(root.get("createdByUserId"), userId),
+                        criteriaBuilder.equal(root.get("assignedUserId"), userId)
+                );
+    }
 }
