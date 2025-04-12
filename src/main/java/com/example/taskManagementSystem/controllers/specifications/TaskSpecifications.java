@@ -3,21 +3,24 @@ import org.springframework.data.jpa.domain.Specification;
 import com.example.taskManagementSystem.domain.entities.TaskEntity;
 
 public class TaskSpecifications {
-    public static Specification<TaskEntity> hasStatus(TaskEntity.Status status) {
-        return (root, query, builder) ->
-                builder.equal(root.get("status"), status.toString());
+    public static Specification<TaskEntity> hasStatuses(TaskEntity.Status[] statuses) {
+        return (root, query, cb) ->
+                statuses == null || statuses.length == 0
+                        ? cb.conjunction()
+                        : root.get("status").in((Object[]) statuses);
     }
 
-    public static Specification<TaskEntity> hasPriority(TaskEntity.Priority priority) {
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("priority"), priority.toString());
+    public static Specification<TaskEntity> hasPriorities(TaskEntity.Priority[] priorities) {
+        return (root, query, cb) ->
+                priorities == null || priorities.length == 0
+                        ? cb.conjunction()
+                        : root.get("priority").in((Object[]) priorities);
     }
 
     public static Specification<TaskEntity> ownedOrAssignedToUser(long userId) {
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.or(
-                        criteriaBuilder.equal(root.get("createdByUserId"), userId),
-                        criteriaBuilder.equal(root.get("assignedUserId"), userId)
-                );
+        return (root, query, cb) -> cb.or(
+                cb.equal(root.get("createdByUserId"), userId),
+                cb.equal(root.get("assignedUserId"), userId)
+        );
     }
 }

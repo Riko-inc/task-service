@@ -1,6 +1,7 @@
 package com.example.taskManagementSystem.services;
 
 import com.example.taskManagementSystem.domain.dto.requests.TaskCreateRequest;
+import com.example.taskManagementSystem.domain.dto.requests.TaskGetAllRequest;
 import com.example.taskManagementSystem.domain.dto.requests.TaskUpdateRequest;
 import com.example.taskManagementSystem.domain.entities.TaskEntity;
 import com.example.taskManagementSystem.domain.entities.UserEntity;
@@ -43,35 +44,15 @@ public interface TaskService {
      */
     TaskEntity getTaskById(long id);
 
-
     //TODO: Доделать сортировки, пагинацию и фильтрацию
 
     /**
      * Получает список всех задач пользователя - созданных им и тех, которые ему назначены.
-     * Поддерживает сортировку по полям:
-     *
-     * @param userId          UserEntity, которому принадлежат задачи
-     * @param pageable      Объект для пагинции
-     * @param specification Объект для применения фильтров и сортировок
-     * @return список {@link TaskEntity}, сохранённый в базе данных
-     * @see #getAllTasksByUserId(long, Pageable, Specification)
-     */
-    List<TaskEntity> getAllTasks(long userId, Pageable pageable, Specification<TaskEntity> specification);
-
-
-    //TODO: Доделать сортировки, пагинацию и фильтрацию
-
-    /**
-     * Получает список всех задач пользователя - созданных им и тех, которые ему назначены.
-     * Поддерживает сортировку по полям:
      *
      * @param userId            UserEntity, которому принадлежат задачи
-     * @param pageable      Объект для пагинции
-     * @param specification Объект для применения фильтров и сортировок
      * @return список {@link TaskEntity}, сохранённый в базе данных
-     * @see #getAllTasks(long, Pageable, Specification)
      */
-    List<TaskEntity> getAllTasksByUserId(long userId, Pageable pageable, Specification<TaskEntity> specification);
+    List<TaskEntity> getAllTasksByUserId(Long userId, TaskGetAllRequest request);
 
 
     /**

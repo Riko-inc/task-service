@@ -2,6 +2,7 @@ package com.example.taskManagementSystem.services.impl;
 
 import com.example.taskManagementSystem.controllers.specifications.TaskSpecifications;
 import com.example.taskManagementSystem.domain.dto.requests.TaskCreateRequest;
+import com.example.taskManagementSystem.domain.dto.requests.TaskGetAllRequest;
 import com.example.taskManagementSystem.domain.dto.requests.TaskUpdateRequest;
 import com.example.taskManagementSystem.domain.entities.TaskEntity;
 import com.example.taskManagementSystem.domain.entities.UserEntity;
@@ -12,7 +13,9 @@ import com.example.taskManagementSystem.repositories.UserRepository;
 import com.example.taskManagementSystem.services.AuthClientService;
 import com.example.taskManagementSystem.services.TaskService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -114,15 +117,35 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    public List<TaskEntity> getAllTasks(long userId, Pageable pageable, Specification<TaskEntity> specification) {
+    public List<TaskEntity> getAllTasksByUserId(Long userId, TaskGetAllRequest request) {
+
+        String[] sortParams = request.getSort().split("\\s*,\\s*");
+        if (sortParams.length != 2) {
+            throw new InvalidRequestParameterException("Invalid sort parameter format");
+        }
+
+
+        String sortField = sortParams[0];
+        Sort.Direction direction = Sort.Direction.fromString(sortParams[1]);
+
+        Sort mainSort = Sort.by(direction, sortField);
+        Sort additionalSort = Sort.by(Sort.Direction.ASC, "taskId");
+        Sort combinedSort = mainSort.and(additionalSort);
+
+        Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), combinedSort);
+
+        Specification<TaskEntity> specification = Specification.where(null);
+
+        if (request.getStatus() != null && request.getStatus().length > 0) {
+            specification = specification.and(TaskSpecifications.hasStatuses(request.getStatus()));
+        }
+
+        if (request.getPriority() != null && request.getPriority().length > 0) {
+            specification = specification.and(TaskSpecifications.hasPriorities(request.getPriority()));
+        }
+
         specification = specification.and(TaskSpecifications.ownedOrAssignedToUser(userId));
         return taskRepository.findAll(specification, pageable).getContent();
-    }
-
-    @Override
-    @Transactional
-    public List<TaskEntity> getAllTasksByUserId(long id, Pageable pageable, Specification<TaskEntity> specification) {
-        return getAllTasks(id, pageable, specification);
     }
 
     @Override
