@@ -115,37 +115,47 @@ public class TaskServiceImpl implements TaskService {
                 .orElseThrow(() -> new EntityNotFoundException("Задача " + id + " не найдена"));
     }
 
+    //TODO: Исправить фильтрацию по энамам. Фильтрует по именам, а не индексам
     @Override
     @Transactional
     public List<TaskEntity> getAllTasksByUserId(Long userId, TaskGetAllRequest request) {
-
         String[] sortParams = request.getSort().split("\\s*,\\s*");
         if (sortParams.length != 2) {
             throw new InvalidRequestParameterException("Invalid sort parameter format");
         }
 
-
         String sortField = sortParams[0];
-        Sort.Direction direction = Sort.Direction.fromString(sortParams[1]);
+        Sort.Direction sortDirection = Sort.Direction.fromString(sortParams[1]);
 
-        Sort mainSort = Sort.by(direction, sortField);
-        Sort additionalSort = Sort.by(Sort.Direction.ASC, "taskId");
-        Sort combinedSort = mainSort.and(additionalSort);
+        Sort sort = Sort.unsorted();
 
-        Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), combinedSort);
+        if (!sortField.equalsIgnoreCase("status") && !sortField.equalsIgnoreCase("priority")) {
+            sort = Sort.by(sortDirection, sortField).and(Sort.by(Sort.Direction.ASC, "taskId"));
+        }
 
+        Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), sort);
+        Specification<TaskEntity> specification = createSpecificationWithEnumOrder(sortField, sortDirection, request, userId);
+
+        return taskRepository.findAll(specification, pageable).getContent();
+    }
+
+    private Specification<TaskEntity> createSpecificationWithEnumOrder(String sortField, Sort.Direction directionStr, TaskGetAllRequest request, Long userId) {
         Specification<TaskEntity> specification = Specification.where(null);
 
+        if (sortField.equalsIgnoreCase("status")) {
+            specification = specification.and(TaskSpecifications.orderByStatus(directionStr));
+        }
+        if (sortField.equalsIgnoreCase("priority")) {
+            specification = specification.and(TaskSpecifications.orderByPriority(directionStr));
+        }
         if (request.getStatus() != null && request.getStatus().length > 0) {
             specification = specification.and(TaskSpecifications.hasStatuses(request.getStatus()));
         }
-
         if (request.getPriority() != null && request.getPriority().length > 0) {
             specification = specification.and(TaskSpecifications.hasPriorities(request.getPriority()));
         }
-
         specification = specification.and(TaskSpecifications.ownedOrAssignedToUser(userId));
-        return taskRepository.findAll(specification, pageable).getContent();
+        return specification;
     }
 
     @Override

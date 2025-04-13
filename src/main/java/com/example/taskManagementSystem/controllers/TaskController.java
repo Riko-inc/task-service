@@ -56,10 +56,10 @@ public class TaskController {
     @Operation(summary = "Получить задачу по её id")
     @SecurityRequirement(name = "JWT")
     @GetMapping(path = "/task/{id}")
+    @Deprecated
     public ResponseEntity<TaskResponse> getTaskById(@PathVariable Long id) {
         TaskEntity savedTaskEntity = taskService.getTaskById(id);
         return new ResponseEntity<>(taskMapper.mapToDto(savedTaskEntity), HttpStatus.OK);
-
     }
 
     @Operation(summary = "Изменить задачу")
