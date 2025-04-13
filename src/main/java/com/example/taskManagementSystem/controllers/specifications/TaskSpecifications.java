@@ -1,4 +1,7 @@
 package com.example.taskManagementSystem.controllers.specifications;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Expression;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import com.example.taskManagementSystem.domain.entities.TaskEntity;
 
@@ -22,5 +25,50 @@ public class TaskSpecifications {
                 cb.equal(root.get("createdByUserId"), userId),
                 cb.equal(root.get("assignedUserId"), userId)
         );
+    }
+
+    public static Specification<TaskEntity> orderByStatus(Sort.Direction direction) {
+        return (root, query, cb) -> {
+            CriteriaBuilder.Case<Integer> statusCase = cb.selectCase();
+            for (TaskEntity.Status status : TaskEntity.Status.values()) {
+                statusCase = statusCase.when(cb.equal(root.get("status"), status.name()), status.getOrder());
+            }
+            Expression<Integer> statusOrder = statusCase.otherwise(99);
+
+            if (direction == Sort.Direction.ASC) {
+                query.orderBy(
+                        cb.asc(statusOrder),
+                        cb.asc(root.get("taskId"))
+                );
+            } else {
+                query.orderBy(
+                        cb.desc(statusOrder),
+                        cb.asc(root.get("taskId"))
+                );
+            }
+            return cb.conjunction();
+        };
+    }
+
+    public static Specification<TaskEntity> orderByPriority(Sort.Direction direction) {
+        return (root, query, cb) -> {
+            CriteriaBuilder.Case<Integer> priorityCase = cb.selectCase();
+            for (TaskEntity.Priority priority : TaskEntity.Priority.values()) {
+                priorityCase = priorityCase.when(cb.equal(root.get("priority"), priority.name()), priority.getOrder());
+            }
+            Expression<Integer> priorityOrder = priorityCase.otherwise(99);
+            if (direction == Sort.Direction.ASC) {
+                query.orderBy(
+                        cb.asc(priorityOrder),
+                        cb.asc(root.get("taskId"))
+                );
+            } else {
+                query.orderBy(
+                        cb.desc(priorityOrder),
+                        cb.asc(root.get("taskId"))
+                );
+            }
+            return cb.conjunction();
+        };
     }
 }

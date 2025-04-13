@@ -2,8 +2,6 @@ package com.example.taskManagementSystem.domain.entities;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -20,8 +18,23 @@ import java.util.List;
 @Builder
 @Table(schema = "task-service", name = "tasks")
 public class TaskEntity {
-    public enum Status { NEW, IN_PROGRESS, COMPLETE }
-    public enum Priority { LOW, MEDIUM, HIGH, DEFAULT }
+    @Getter
+    public enum Status {
+        NEW(0), IN_PROGRESS(1), COMPLETE(2);
+        private final int order;
+        Status(int order) {
+            this.order = order;
+        }
+    }
+
+    @Getter
+    public enum Priority {
+        DEFAULT(0), LOW(1), MEDIUM(2), HIGH(3);
+        private final int order;
+        Priority(int order) {
+            this.order = order;
+        }
+    }
 
     @Id
     @SequenceGenerator(name = "tasks_seq", sequenceName = "tasks_sequence")
