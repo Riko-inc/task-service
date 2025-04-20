@@ -154,11 +154,11 @@ public class TaskServiceImpl implements TaskService {
         if (request.getPriority() != null && request.getPriority().length > 0) {
             specification = specification.and(TaskSpecifications.hasPriorities(request.getPriority()));
         }
-        if (request.getCreatedBy() != null) {
-            specification = specification.and(TaskSpecifications.ownedByUser(request.getCreatedBy()));
+        if (request.getCreatedByUserId() != null) {
+            specification = specification.and(TaskSpecifications.ownedByUser(request.getCreatedByUserId()));
         }
-        if (request.getAssignedTo() != null) {
-            specification = specification.and(TaskSpecifications.assignedToUser(request.getAssignedTo()));
+        if (request.getAssignedToUserId() != null) {
+            specification = specification.and(TaskSpecifications.assignedToUser(request.getAssignedToUserId()));
         }
         if (request.getMonthAndYear() != null && !request.getMonthAndYear().isEmpty()) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M.yyyy");

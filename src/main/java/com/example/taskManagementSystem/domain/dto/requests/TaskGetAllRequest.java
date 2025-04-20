@@ -48,13 +48,13 @@ public class TaskGetAllRequest {
             description = "Фильтр по id создавшего пользователя",
             example = "1"
     )
-    private Long createdBy;
+    private Long createdByUserId;
 
     @Schema(
             description = "Фильтр по id назначенного пользователя",
             example = "1"
     )
-    private Long assignedTo;
+    private Long assignedToUserId;
 
     @Schema(
             description = "Фильтр по месяцу для календаря",
