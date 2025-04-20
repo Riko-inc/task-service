@@ -5,6 +5,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import com.example.taskManagementSystem.domain.entities.TaskEntity;
 
+import java.time.LocalDateTime;
+
 public class TaskSpecifications {
     public static Specification<TaskEntity> hasStatuses(TaskEntity.Status[] statuses) {
         return (root, query, cb) ->
@@ -24,6 +26,24 @@ public class TaskSpecifications {
         return (root, query, cb) -> cb.or(
                 cb.equal(root.get("createdByUserId"), userId),
                 cb.equal(root.get("assignedUserId"), userId)
+        );
+    }
+
+    public static Specification<TaskEntity> ownedByUser(Long userId) {
+        return (root, query, cb) -> (
+                cb.equal(root.get("createdByUserId"), userId)
+        );
+    }
+
+    public static Specification<TaskEntity> assignedToUser(Long userId) {
+        return (root, query, cb) -> (
+                cb.equal(root.get("assignedUserId"), userId)
+        );
+    }
+
+    public static Specification<TaskEntity> inGivenTimePeriod(LocalDateTime start, LocalDateTime end) {
+        return (root, query, cb) -> (
+                cb.between(root.get("dueTo"), start, end)
         );
     }
 

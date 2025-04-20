@@ -8,6 +8,7 @@ import com.example.taskManagementSystem.domain.entities.TaskEntity;
 import com.example.taskManagementSystem.domain.entities.UserEntity;
 import com.example.taskManagementSystem.exceptions.EntityNotFoundException;
 import com.example.taskManagementSystem.exceptions.InvalidRequestParameterException;
+import com.example.taskManagementSystem.mappers.Mapper;
 import com.example.taskManagementSystem.repositories.TaskRepository;
 import com.example.taskManagementSystem.repositories.UserRepository;
 import com.example.taskManagementSystem.services.AuthClientService;
@@ -20,7 +21,11 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
@@ -115,7 +120,6 @@ public class TaskServiceImpl implements TaskService {
                 .orElseThrow(() -> new EntityNotFoundException("Задача " + id + " не найдена"));
     }
 
-    //TODO: Исправить фильтрацию по энамам. Фильтрует по именам, а не индексам
     @Override
     @Transactional
     public List<TaskEntity> getAllTasksByUserId(Long userId, TaskGetAllRequest request) {
@@ -154,6 +158,20 @@ public class TaskServiceImpl implements TaskService {
         if (request.getPriority() != null && request.getPriority().length > 0) {
             specification = specification.and(TaskSpecifications.hasPriorities(request.getPriority()));
         }
+        if (request.getCreatedByFilter() != null) {
+            specification = specification.and(TaskSpecifications.ownedByUser(request.getCreatedByFilter()));
+        }
+        if (request.getAssignedToFilter() != null) {
+            specification = specification.and(TaskSpecifications.assignedToUser(request.getAssignedToFilter()));
+        }
+        if (request.getMonthFilter() != null && !request.getMonthFilter().isEmpty()) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M.yyyy");
+            YearMonth yearMonth = YearMonth.parse(request.getMonthFilter(), formatter);
+            LocalDateTime monthStart = yearMonth.atDay(1).atStartOfDay();
+            LocalDateTime monthEnd = yearMonth.atEndOfMonth().atTime(LocalTime.MAX);
+            specification = specification.and(TaskSpecifications.inGivenTimePeriod(monthStart, monthEnd));
+        }
+
         specification = specification.and(TaskSpecifications.ownedOrAssignedToUser(userId));
         return specification;
     }
