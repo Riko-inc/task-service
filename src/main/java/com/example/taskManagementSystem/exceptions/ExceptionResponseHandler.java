@@ -33,9 +33,7 @@ public class ExceptionResponseHandler {
     public ErrorResponse handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, Object> fieldErrors = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error ->
-                        fieldErrors.put(error.getField(), error.getDefaultMessage())
-                );
-
+                        fieldErrors.put(error.getField(), error.getDefaultMessage()));
         return ErrorResponse.builder()
                 .id(UUID.randomUUID())
                 .message("Request fields validation failed")
@@ -48,7 +46,7 @@ public class ExceptionResponseHandler {
     public ErrorResponse handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
         return ErrorResponse.builder()
                 .id(UUID.randomUUID())
-                .message(ex.getMostSpecificCause().getMessage())
+                .message(ex.getMessage())
                 .params(Collections.emptyMap())
                 .build();
     }
