@@ -44,4 +44,22 @@ public class TaskGetAllRequest {
             example = "HIGH,MEDIUM"
     )
     private TaskEntity.Priority[] priority;
+
+    @Schema(
+            description = "Фильтр по id создавшего пользователя",
+            example = "1"
+    )
+    private Long createdByFilter;
+
+    @Schema(
+            description = "Фильтр по id назначенного пользователя",
+            example = "1"
+    )
+    private Long AssignedToFilter;
+
+    @Schema(
+            description = "Фильтр по месяцу для календаря",
+            example = "04.2025"
+    )
+    private String monthFilter;
 }
