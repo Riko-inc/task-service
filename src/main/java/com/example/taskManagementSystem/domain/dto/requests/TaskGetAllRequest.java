@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
@@ -49,17 +48,17 @@ public class TaskGetAllRequest {
             description = "Фильтр по id создавшего пользователя",
             example = "1"
     )
-    private Long createdByFilter;
+    private Long createdBy;
 
     @Schema(
             description = "Фильтр по id назначенного пользователя",
             example = "1"
     )
-    private Long AssignedToFilter;
+    private Long assignedTo;
 
     @Schema(
             description = "Фильтр по месяцу для календаря",
             example = "04.2025"
     )
-    private String monthFilter;
+    private String monthAndYear;
 }
