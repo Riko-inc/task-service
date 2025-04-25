@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(schema = "task-service", name = "comments")
+@Table(schema = "task_service", name = "comments")
 public class CommentEntity {
 
     @Id
@@ -24,10 +24,9 @@ public class CommentEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long commentId;
 
-    @ManyToOne
+    // TODO: make cascade operations
     @JoinColumn(name = "author_id", nullable = true)
-    @OnDelete(action = OnDeleteAction.SET_NULL)
-    private UserEntity author;
+    private Long authorId;
 
     @Column(nullable = false)
     private String content;

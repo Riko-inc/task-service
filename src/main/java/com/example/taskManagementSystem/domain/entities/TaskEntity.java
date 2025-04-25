@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(schema = "task-service", name = "tasks")
+@Table(schema = "task_service", name = "tasks")
 public class TaskEntity {
     @Getter
     public enum Status {

@@ -34,7 +34,7 @@ public class CommentServiceImpl implements CommentService {
         CommentEntity comment = CommentEntity.builder()
                 .task(taskEntity)
                 .content(commentRequest.getContent())
-                .author(user)
+                .authorId(user.getUserId())
                 .createdDate(LocalDateTime.now())
                 .build();
         return commentRepository.save(comment);

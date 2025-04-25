@@ -58,6 +58,6 @@ public class AccessService {
      */
     public boolean canChangeComment(UserEntity userEntity, long commentId) {
         Optional<CommentEntity> comment = commentRepository.findById(commentId);
-        return comment.isPresent() && Objects.equals(comment.get().getAuthor().getUserId(), userEntity.getUserId());
+        return comment.isPresent() && Objects.equals(comment.get().getAuthorId(), userEntity.getUserId());
     }
 }
