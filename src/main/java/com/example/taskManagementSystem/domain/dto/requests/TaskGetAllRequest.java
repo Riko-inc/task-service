@@ -53,7 +53,7 @@ public class TaskGetAllRequest {
             type = "array"
     )
     @ArraySchema(schema = @Schema(type = "integer", format = "int64"))
-    private List<Long> createdByUserIds;
+    private List<Long> createdByUserId;
 
     @Schema(
             description = "Фильтр по ID пользователей, которым назначены задачи. " +
@@ -61,7 +61,7 @@ public class TaskGetAllRequest {
             example = "1",
             type = "array")
     @ArraySchema(schema = @Schema(type = "integer", format = "int64"))
-    private List<Long> assignedToUserIds;
+    private List<Long> assignedToUserId;
 
     @Schema(
             description = "Фильтр по месяцу для календаря",
