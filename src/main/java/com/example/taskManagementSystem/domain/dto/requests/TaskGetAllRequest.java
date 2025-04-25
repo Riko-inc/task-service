@@ -43,13 +43,13 @@ public class TaskGetAllRequest {
             description = "Фильтр по приоритетам (можно несколько значений)",
             implementation = TaskEntity.Priority.class,
             type = "array",
-            example = "HIGH,MEDIUM"
+            example = "HIGH,MEDIUM,LOW,DEFAULT"
     )
     private TaskEntity.Priority[] priority;
 
     @Schema(
-            description = "Фильтр по ID пользователей, создавших задачи. Можно передать как одиночный ID (например, 1), так и список ID (например, [1, 2, 3]).",
-            example = "1",
+            description = "Фильтр по ID пользователей, создавших задачи. Можно передать как одиночный ID (например, 1), так и список ID (например, 1,2,3).",
+            example = "1,2",
             type = "array"
     )
     @ArraySchema(schema = @Schema(type = "integer", format = "int64"))
@@ -57,8 +57,8 @@ public class TaskGetAllRequest {
 
     @Schema(
             description = "Фильтр по ID пользователей, которым назначены задачи. " +
-                    "Можно передать как одиночный ID (например, 1), так и список ID (например, [1, 2, 3]).",
-            example = "1",
+                    "Можно передать как одиночный ID (например, 1), так и список ID (например, 1,2,3).",
+            example = "1,2",
             type = "array")
     @ArraySchema(schema = @Schema(type = "integer", format = "int64"))
     private List<Long> assignedToUserId;

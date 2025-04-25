@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Schema(description = "Запрос на создание новой задачи")
 public class TaskCreateRequest {
     @Schema(description = "Заголовок задачи", example = "Купить молоко")
-    @Size(max = 60, message = "Заголовок должен быть не длиннее 60 символов")
+    @Size(max = 255, message = "Заголовок должен быть не длиннее 255 символов")
     @NotBlank(message = "Название задачи не может быть пустым")
     private String title;
 
@@ -25,11 +25,10 @@ public class TaskCreateRequest {
     @Schema(description = "Приоритет задачи", example = "LOW", defaultValue = "DEFAULT")
     private TaskEntity.Priority priority = TaskEntity.Priority.DEFAULT;
 
-    @Schema(description = "Id пользователя, кому назначена задача", example = "3", nullable = true)
+    @Schema(description = "Id пользователя, кому назначена задача", example = "1", nullable = true)
     private Long assignedToUserId;
 
     @Schema(type = "string", description = "Дата дедлайна", example = "14-05-2024 20:50")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
     private LocalDateTime dueTo;
-
 }

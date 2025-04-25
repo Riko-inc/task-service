@@ -6,9 +6,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-@Schema(description = "Запрос на создание новой задачи")
+@Schema(description = "Запрос обновление статуса задачи")
 public class TaskStatusUpdateRequest {
-    @Schema(description = "Id задачи", example = "12")
+    @Schema(description = "Id задачи", example = "1")
     @NotNull(message = "Id задачи не может быть пустым")
     private long taskId;
 

@@ -12,12 +12,12 @@ import java.time.LocalDateTime;
 @Data
 @Schema(description = "Запрос на создание новой задачи")
 public class TaskUpdateRequest {
-    @Schema(description = "Id задачи", example = "12")
+    @Schema(description = "Id задачи", example = "1")
     @NotNull(message = "Id задачи не может быть пустым")
     private long taskId;
 
     @Schema(description = "Заголовок задачи", example = "Купить молоко")
-    @Size(max = 60, message = "Заголовок должен быть не длиннее 60 символов")
+    @Size(max = 255, message = "Заголовок должен быть не длиннее 255 символов")
     private String title;
 
     @Schema(description = "Описание задачи", example = "Бренд: домик в деревне, главное не перепутать!")
@@ -29,7 +29,7 @@ public class TaskUpdateRequest {
     @Schema(description = "Приоритет задачи", example = "LOW", defaultValue = "DEFAULT")
     private TaskEntity.Priority priority = TaskEntity.Priority.DEFAULT;
 
-    @Schema(description = "Id пользователя, кому назначена задача", example = "12")
+    @Schema(description = "Id пользователя, кому назначена задача", example = "1")
     private Long assignedToUserId;
 
     @Schema(type = "string", description = "Дата дедлайна", example = "14-05-2024 20:50")
