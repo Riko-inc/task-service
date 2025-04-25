@@ -9,18 +9,18 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class TaskSpecifications {
-    public static Specification<TaskEntity> hasStatuses(TaskEntity.Status[] statuses) {
+    public static Specification<TaskEntity> hasStatuses(List<TaskEntity.Status> statuses) {
         return (root, query, cb) ->
-                statuses == null || statuses.length == 0
+                statuses == null || statuses.isEmpty()
                         ? cb.conjunction()
-                        : root.get("status").in((Object[]) statuses);
+                        : root.get("status").in(statuses);
     }
 
-    public static Specification<TaskEntity> hasPriorities(TaskEntity.Priority[] priorities) {
+    public static Specification<TaskEntity> hasPriorities(List<TaskEntity.Priority> priorities) {
         return (root, query, cb) ->
-                priorities == null || priorities.length == 0
+                priorities == null || priorities.isEmpty()
                         ? cb.conjunction()
-                        : root.get("priority").in((Object[]) priorities);
+                        : root.get("priority").in(priorities);
     }
 
     public static Specification<TaskEntity> ownedOrAssignedToUser(long userId) {

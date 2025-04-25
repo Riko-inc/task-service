@@ -148,10 +148,10 @@ public class TaskServiceImpl implements TaskService {
         if (sortField.equalsIgnoreCase("priority")) {
             specification = specification.and(TaskSpecifications.orderByPriority(directionStr));
         }
-        if (request.getStatus() != null && request.getStatus().length > 0) {
+        if (request.getStatus() != null && !request.getStatus().isEmpty()) {
             specification = specification.and(TaskSpecifications.hasStatuses(request.getStatus()));
         }
-        if (request.getPriority() != null && request.getPriority().length > 0) {
+        if (request.getPriority() != null && !request.getPriority().isEmpty()) {
             specification = specification.and(TaskSpecifications.hasPriorities(request.getPriority()));
         }
         if (request.getCreatedByUserId() != null) {
