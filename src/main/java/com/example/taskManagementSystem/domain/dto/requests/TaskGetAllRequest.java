@@ -1,11 +1,14 @@
 package com.example.taskManagementSystem.domain.dto.requests;
 
 import com.example.taskManagementSystem.domain.entities.TaskEntity;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 @Schema(description = "Запрос на получение всех задач пользователя по его id")
@@ -45,16 +48,20 @@ public class TaskGetAllRequest {
     private TaskEntity.Priority[] priority;
 
     @Schema(
-            description = "Фильтр по id создавшего пользователя",
-            example = "1"
+            description = "Фильтр по ID пользователей, создавших задачи. Можно передать как одиночный ID (например, 1), так и список ID (например, [1, 2, 3]).",
+            example = "1",
+            type = "array"
     )
-    private Long createdByUserId;
+    @ArraySchema(schema = @Schema(type = "integer", format = "int64"))
+    private List<Long> createdByUserIds;
 
     @Schema(
-            description = "Фильтр по id назначенного пользователя",
-            example = "1"
-    )
-    private Long assignedToUserId;
+            description = "Фильтр по ID пользователей, которым назначены задачи. " +
+                    "Можно передать как одиночный ID (например, 1), так и список ID (например, [1, 2, 3]).",
+            example = "1",
+            type = "array")
+    @ArraySchema(schema = @Schema(type = "integer", format = "int64"))
+    private List<Long> assignedToUserIds;
 
     @Schema(
             description = "Фильтр по месяцу для календаря",

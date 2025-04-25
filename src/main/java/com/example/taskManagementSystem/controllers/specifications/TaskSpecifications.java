@@ -6,6 +6,7 @@ import org.springframework.data.jpa.domain.Specification;
 import com.example.taskManagementSystem.domain.entities.TaskEntity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class TaskSpecifications {
     public static Specification<TaskEntity> hasStatuses(TaskEntity.Status[] statuses) {
@@ -29,16 +30,22 @@ public class TaskSpecifications {
         );
     }
 
-    public static Specification<TaskEntity> ownedByUser(Long userId) {
-        return (root, query, cb) -> (
-                cb.equal(root.get("createdByUserId"), userId)
-        );
+    public static Specification<TaskEntity> ownedByUsers(List<Long> userIds) {
+        return (root, query, cb) -> {
+            if (userIds == null || userIds.isEmpty()) {
+                return cb.conjunction(); // или cb.disjunction() в зависимости от логики
+            }
+            return root.get("createdByUserId").in(userIds);
+        };
     }
 
-    public static Specification<TaskEntity> assignedToUser(Long userId) {
-        return (root, query, cb) -> (
-                cb.equal(root.get("assignedUserId"), userId)
-        );
+    public static Specification<TaskEntity> assignedToUsers(List<Long> userIds) {
+        return (root, query, cb) -> {
+            if (userIds == null || userIds.isEmpty()) {
+                return cb.conjunction(); // или cb.disjunction() в зависимости от логики
+            }
+            return root.get("assignedUserId").in(userIds);
+        };
     }
 
     public static Specification<TaskEntity> inGivenTimePeriod(LocalDateTime start, LocalDateTime end) {
