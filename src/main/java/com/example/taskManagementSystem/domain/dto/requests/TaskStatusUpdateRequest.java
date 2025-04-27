@@ -10,7 +10,7 @@ import lombok.Data;
 public class TaskStatusUpdateRequest {
     @Schema(description = "Id задачи", example = "1")
     @NotNull(message = "Id задачи не может быть пустым")
-    private long taskId;
+    private Long taskId;
 
     @Schema(description = "Статус задачи", example = "NEW")
     @NotNull(message = "Статус задачи не может быть пустым")

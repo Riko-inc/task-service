@@ -13,7 +13,6 @@ public class CommentUpdateRequest {
     private Long commentId;
 
     @Schema(type = "string", description = "Текст комментария", example = "Отличная работа!")
-    @NotNull
     @NotBlank(message = "Текст комментария к задаче не может быть пустым")
     private String content;
 }

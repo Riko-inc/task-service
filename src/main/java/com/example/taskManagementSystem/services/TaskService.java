@@ -44,8 +44,6 @@ public interface TaskService {
      */
     TaskEntity getTaskById(long id);
 
-    //TODO: Доделать сортировки, пагинацию и фильтрацию
-
     /**
      * Получает список всех задач пользователя - созданных им и тех, которые ему назначены.
      *
@@ -53,7 +51,6 @@ public interface TaskService {
      * @return список {@link TaskEntity}, сохранённый в базе данных
      */
     List<TaskEntity> getAllTasksByUserId(Long userId, TaskGetAllRequest request);
-
 
     /**
      * Удаляет задачу по её id. Может быть удалена только автором задачи

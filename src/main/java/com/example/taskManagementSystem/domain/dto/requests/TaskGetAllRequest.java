@@ -14,11 +14,11 @@ import java.util.List;
 @Schema(description = "Запрос на получение всех задач пользователя по его id")
 public class TaskGetAllRequest {
 
-    @NotNull
+    @NotNull(message = "Номер страницы не может быть пустым")
     @Schema(description = "Номер страницы", defaultValue = "0", example = "0")
     private Integer page = 0;
 
-    @NotNull
+    @NotNull(message = "Размер страницы не может быть пустым")
     @Min(1)
     @Max(100)
     @Schema(description = "Размер страницы", defaultValue = "50", example = "50")

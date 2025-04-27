@@ -68,7 +68,7 @@ public class AccessServiceTest {
         userEntity.setUserId(1L);
 
         CommentEntity commentEntity = new CommentEntity();
-        commentEntity.setAuthor(userEntity);
+        commentEntity.setAuthorId(userEntity.getUserId());
 
         when(commentRepository.findById(1L)).thenReturn(Optional.of(commentEntity));
 

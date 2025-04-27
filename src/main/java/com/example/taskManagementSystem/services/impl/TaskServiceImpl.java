@@ -86,25 +86,14 @@ public class TaskServiceImpl implements TaskService {
             throw new EntityNotFoundException("Assigned user with id " + taskUpdateRequest.getAssignedToUserId() + " was not found");
         }
 
-        if (taskUpdateRequest.getDueTo() != null) {
-            taskEntity.setDueTo(taskUpdateRequest.getDueTo());
-        }
-        if (taskUpdateRequest.getAssignedToUserId() != null) {
-            taskEntity.setAssignedUserId(taskUpdateRequest.getAssignedToUserId());
-        }
-        if (taskUpdateRequest.getTitle() != null) {
-            taskEntity.setTitle(taskUpdateRequest.getTitle());
-        }
-        if (taskUpdateRequest.getDescription() != null) {
-            taskEntity.setDescription(taskUpdateRequest.getDescription());
-        }
-        if (taskUpdateRequest.getPriority() != taskEntity.getPriority()) {
-            taskEntity.setPriority(taskUpdateRequest.getPriority());
-        }
-        if (taskUpdateRequest.getStatus() != taskEntity.getStatus()) {
-            taskEntity.setStatus(taskUpdateRequest.getStatus());
-        }
+        taskEntity.setDueTo(taskUpdateRequest.getDueTo());
+        taskEntity.setAssignedUserId(taskUpdateRequest.getAssignedToUserId());
+        taskEntity.setTitle(taskUpdateRequest.getTitle());
+        taskEntity.setDescription(taskUpdateRequest.getDescription());
+        taskEntity.setPriority(taskUpdateRequest.getPriority());
+        taskEntity.setStatus(taskUpdateRequest.getStatus());
         taskRepository.saveAndFlush(taskEntity);
+
         return taskEntity;
     }
 

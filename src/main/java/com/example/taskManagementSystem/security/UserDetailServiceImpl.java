@@ -31,23 +31,3 @@ public class UserDetailServiceImpl implements UserDetailsService {
                 .build();
     }
 }
-
-//
-//    private UserEntity buildUserFromUserEntity(UserEntity userEntity) {
-//        // convert model user to spring security user
-//        Long id = userEntity.getUserId();
-//        String password = userEntity.getPassword();
-//        boolean enabled = true;
-//        boolean accountNonExpired = true;
-//        boolean credentialsNonExpired = true;
-//        boolean accountNonLocked = true;
-//        GrantedAuthority[] authorities = new GrantedAuthorityImpl[1];
-//        authorities[0] = new GrantedAuthorityImpl(userEntity.getRole());
-//
-//        UserEntity springUser = new UserEntity(username, password, enabled,
-//                accountNonExpired, credentialsNonExpired, accountNonLocked,
-//                authorities);
-//        return springUser;
-//    }
-//
-//}
