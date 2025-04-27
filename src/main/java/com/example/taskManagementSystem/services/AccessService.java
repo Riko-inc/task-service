@@ -3,6 +3,7 @@ package com.example.taskManagementSystem.services;
 import com.example.taskManagementSystem.domain.entities.CommentEntity;
 import com.example.taskManagementSystem.domain.entities.TaskEntity;
 import com.example.taskManagementSystem.domain.entities.UserEntity;
+import com.example.taskManagementSystem.exceptions.EntityNotFoundException;
 import com.example.taskManagementSystem.repositories.CommentRepository;
 import com.example.taskManagementSystem.repositories.TaskRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,11 +31,13 @@ public class AccessService {
      * @return True/False
      */
     public boolean canChangeTask(UserEntity userEntity, long taskId) {
-        Optional<TaskEntity> task = taskRepository.findById(taskId);
+        TaskEntity task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new EntityNotFoundException("Task with id " + taskId + " was not found"));
+
         log.info("Task found: {}", task);
         log.info("UserId: {}", userEntity.getUserId());
-        log.info("Can change task: {}", task.isPresent() && Objects.equals(userEntity.getUserId(), task.get().getCreatedByUserId()));
-        return task.isPresent() && Objects.equals(userEntity.getUserId(), task.get().getCreatedByUserId());
+        log.info("Can change task: {}", Objects.equals(userEntity.getUserId(), task.getCreatedByUserId()));
+        return Objects.equals(userEntity.getUserId(), task.getCreatedByUserId());
     }
 
     /**
@@ -45,9 +48,10 @@ public class AccessService {
      * @return True/False
      */
     public boolean canChangeStatus(UserEntity userEntity, long taskId) {
-        Optional<TaskEntity> task = taskRepository.findById(taskId);
-        return task.isPresent() && (Objects.equals(userEntity.getUserId(), task.get().getCreatedByUserId()) ||
-                Objects.equals(userEntity.getUserId(), task.get().getAssignedUserId()));
+        TaskEntity task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new EntityNotFoundException("Task with id " + taskId + " was not found"));
+        return (Objects.equals(userEntity.getUserId(), task.getCreatedByUserId()) ||
+                Objects.equals(userEntity.getUserId(), task.getAssignedUserId()));
     }
 
     /**
@@ -57,7 +61,8 @@ public class AccessService {
      * @return True/False
      */
     public boolean canChangeComment(UserEntity userEntity, long commentId) {
-        Optional<CommentEntity> comment = commentRepository.findById(commentId);
-        return comment.isPresent() && Objects.equals(comment.get().getAuthorId(), userEntity.getUserId());
+        CommentEntity comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("Comment with id " + commentId + " was not found"));;
+        return Objects.equals(comment.getAuthorId(), userEntity.getUserId());
     }
 }
