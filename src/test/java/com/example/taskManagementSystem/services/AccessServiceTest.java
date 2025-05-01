@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -40,6 +41,7 @@ public class AccessServiceTest {
 
         TaskEntity taskEntity = new TaskEntity();
         taskEntity.setCreatedByUserId(userEntity.getUserId());
+        taskEntity.setCreatedDate(LocalDateTime.now());
 
         when(taskRepository.findById(1L)).thenReturn(Optional.of(taskEntity));
 
@@ -55,6 +57,7 @@ public class AccessServiceTest {
         TaskEntity taskEntity = new TaskEntity();
         taskEntity.setCreatedByUserId(userEntity.getUserId());
         taskEntity.setAssignedUserId(userEntity.getUserId());
+        taskEntity.setCreatedDate(LocalDateTime.now());
 
         when(taskRepository.findById(1L)).thenReturn(Optional.of(taskEntity));
 
@@ -69,6 +72,7 @@ public class AccessServiceTest {
 
         CommentEntity commentEntity = new CommentEntity();
         commentEntity.setAuthorId(userEntity.getUserId());
+        commentEntity.setCreatedDate(LocalDateTime.now());
 
         when(commentRepository.findById(1L)).thenReturn(Optional.of(commentEntity));
 
