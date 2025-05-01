@@ -27,10 +27,7 @@ public class UserEventsListener {
 
     @KafkaListener(topics = "user-events", groupId = "task-service")
     public void handleUserCreated(StringEvent event) {
-        log.info("event type: {}", event.getEventType());
-        log.info("payload: {}", event.getPayload());
-        log.info("payload class: {}", event.getPayload().getClass());
-        log.info("payload Long: {}", Long.valueOf(event.getPayload()));
+        log.info("event type: {} \n payload: {}", event.getEventType(), event.getPayload());
         Long userId = Long.valueOf(event.getPayload());
         TaskEntity firstTask = TaskEntity.builder()
                 .createdByUserId(userId)
@@ -54,6 +51,7 @@ public class UserEventsListener {
                 .status(TaskEntity.Status.NEW)
                 .createdDate(LocalDateTime.now())
                 .createdByUserId(1L)
+                .assignedUserId(userId)
                 .build();
 
         taskRepository.saveAll(List.of(firstTask, secondTask, thirdTask));
