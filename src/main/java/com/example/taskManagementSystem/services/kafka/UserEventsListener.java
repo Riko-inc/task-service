@@ -19,12 +19,6 @@ public class UserEventsListener {
 
     private final TaskRepository taskRepository;
 
-//    @KafkaListener(topics = "user-events", groupId = "task-service")
-//    public void handleUserDeleted(UserDeletedEvent event) {
-//        Long userId = event.getUserId();
-//        taskRepository.deleteAllByCreatedByUserId(userId);
-//    }
-
     @KafkaListener(topics = "user-events", groupId = "task-service")
     public void handleUserCreated(StringEvent event) {
         log.info("event type: {} \n payload: {}", event.getEventType(), event.getPayload());
