@@ -3,6 +3,7 @@ package com.example.taskManagementSystem.services;
 import com.example.taskManagementSystem.domain.entities.CommentEntity;
 import com.example.taskManagementSystem.domain.entities.TaskEntity;
 import com.example.taskManagementSystem.domain.entities.UserEntity;
+import com.example.taskManagementSystem.exceptions.EntityNotFoundException;
 import com.example.taskManagementSystem.repositories.CommentRepository;
 import com.example.taskManagementSystem.repositories.TaskRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,10 +12,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,11 +41,12 @@ public class AccessServiceTest {
 
         TaskEntity taskEntity = new TaskEntity();
         taskEntity.setCreatedByUserId(userEntity.getUserId());
+        taskEntity.setCreatedDate(LocalDateTime.now());
 
         when(taskRepository.findById(1L)).thenReturn(Optional.of(taskEntity));
 
         assertTrue(accessService.canChangeTask(userEntity, 1L));
-        assertFalse(accessService.canChangeTask(userEntity, 2L));
+        assertThrows(EntityNotFoundException.class, () -> accessService.canChangeTask(userEntity, 2L));
     }
 
     @Test
@@ -55,11 +57,12 @@ public class AccessServiceTest {
         TaskEntity taskEntity = new TaskEntity();
         taskEntity.setCreatedByUserId(userEntity.getUserId());
         taskEntity.setAssignedUserId(userEntity.getUserId());
+        taskEntity.setCreatedDate(LocalDateTime.now());
 
         when(taskRepository.findById(1L)).thenReturn(Optional.of(taskEntity));
 
         assertTrue(accessService.canChangeStatus(userEntity, 1L));
-        assertFalse(accessService.canChangeStatus(userEntity, 2L));
+        assertThrows(EntityNotFoundException.class, () -> accessService.canChangeTask(userEntity, 2L));
     }
 
     @Test
@@ -69,10 +72,11 @@ public class AccessServiceTest {
 
         CommentEntity commentEntity = new CommentEntity();
         commentEntity.setAuthorId(userEntity.getUserId());
+        commentEntity.setCreatedDate(LocalDateTime.now());
 
         when(commentRepository.findById(1L)).thenReturn(Optional.of(commentEntity));
 
         assertTrue(accessService.canChangeComment(userEntity, 1L));
-        assertFalse(accessService.canChangeComment(userEntity, 2L));
+        assertThrows(EntityNotFoundException.class, () -> accessService.canChangeComment(userEntity, 2L));
     }
 }
