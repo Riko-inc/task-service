@@ -49,7 +49,20 @@ services:
       timeout: 5s
       retries: 5
       start_period: 20s
-
+  space-service:
+    build:
+      context: ../space-service
+      dockerfile: ../space-service/Dockerfile
+    ports:
+      - "8085:8085"
+    depends_on:
+      - postgres
+    healthcheck:
+      test: "curl --fail --silent localhost:8085/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
   kafka:
     image: 'bitnami/kafka:3.8'
     environment:
