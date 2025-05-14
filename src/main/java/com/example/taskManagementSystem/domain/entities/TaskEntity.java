@@ -46,7 +46,7 @@ public class TaskEntity {
 
     private String description;
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
     private LocalDateTime dueTo;
 
     @Enumerated(EnumType.STRING)

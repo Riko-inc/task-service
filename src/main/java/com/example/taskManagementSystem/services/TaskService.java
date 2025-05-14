@@ -5,8 +5,6 @@ import com.example.taskManagementSystem.domain.dto.requests.TaskGetAllRequest;
 import com.example.taskManagementSystem.domain.dto.requests.TaskUpdateRequest;
 import com.example.taskManagementSystem.domain.entities.TaskEntity;
 import com.example.taskManagementSystem.domain.entities.UserEntity;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

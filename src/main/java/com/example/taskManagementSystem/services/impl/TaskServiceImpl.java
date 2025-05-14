@@ -12,6 +12,10 @@ import com.example.taskManagementSystem.repositories.TaskRepository;
 import com.example.taskManagementSystem.services.AuthClientService;
 import com.example.taskManagementSystem.services.TaskService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -38,6 +42,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
+    @Caching(put = @CachePut(value = "tasks", key = "#result.taskId"),
+             evict = @CacheEvict(value = "taskLists", allEntries = true)
+    )
     public TaskEntity createTask(UserEntity user, TaskCreateRequest taskRequest) {
         if (EnumSet.allOf(TaskEntity.Priority.class).stream()
                 .noneMatch(e -> e.equals(taskRequest.getPriority()))) {
@@ -68,6 +75,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
+    @Caching(put = @CachePut(value = "tasks", key = "#taskUpdateRequest.taskId"),
+             evict = @CacheEvict(value = "taskLists", allEntries = true))
     public TaskEntity updateTask(TaskUpdateRequest taskUpdateRequest) {
         TaskEntity taskEntity = taskRepository.findById(taskUpdateRequest.getTaskId())
                 .orElseThrow(() -> new EntityNotFoundException("Задача " + taskUpdateRequest.getTaskId() + " не найдена"));
@@ -100,6 +109,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
+    @Cacheable(value = "tasks", key = "#id")
     public TaskEntity getTaskById(long id) {
         return taskRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Задача " + id + " не найдена"));
@@ -107,6 +117,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
+    @Cacheable(value = "taskLists",
+               keyGenerator = "taskListKeyGenerator")
     public List<TaskEntity> getAllTasksByUserId(Long userId, TaskGetAllRequest request) {
         String[] sortParams = request.getSort().split("\\s*,\\s*");
         if (sortParams.length != 2) {
@@ -163,6 +175,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
+    @Caching(put = @CachePut(value = "tasks", key = "#taskId"),
+             evict = @CacheEvict(value = "taskLists", allEntries = true))
     public TaskEntity updateTaskStatus(long taskId, TaskEntity.Status taskStatus){
         if (EnumSet.allOf(TaskEntity.Status.class).stream()
                 .noneMatch(e -> e.equals(taskStatus))) {
@@ -178,6 +192,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
+    @Caching(evict = {
+                    @CacheEvict(value = "tasks", key = "#id"),
+                    @CacheEvict(value = "taskLists", allEntries = true)})
     public void deleteTaskById(long id) {
         taskRepository.deleteTaskByTaskId(id);
     }
