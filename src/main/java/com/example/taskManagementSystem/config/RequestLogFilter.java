@@ -4,6 +4,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.web.servlet.server.Encoding;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
@@ -27,7 +28,7 @@ public class RequestLogFilter implements Filter {
         } finally {
             byte[] responseBody = wrappedResponse.getContentAsByteArray();
             String body = responseBody.length > 0 ?
-                    new String(responseBody, wrappedResponse.getCharacterEncoding()) : "[empty body]";
+                    new String(responseBody, Encoding.DEFAULT_CHARSET) : "[empty body]";
 
             log.info("Response {} {}: {} | Body: {}",
                     wrappedResponse.getStatus(),
