@@ -29,6 +29,7 @@ public class UserEventsListener {
                 .priority(TaskEntity.Priority.MEDIUM)
                 .status(TaskEntity.Status.COMPLETE)
                 .createdDate(LocalDateTime.now())
+                .position(1D)
                 .build();
 
         TaskEntity secondTask = TaskEntity.builder()
@@ -37,6 +38,7 @@ public class UserEventsListener {
                 .priority(TaskEntity.Priority.LOW)
                 .status(TaskEntity.Status.IN_PROGRESS)
                 .createdDate(LocalDateTime.now())
+                .position(2D)
                 .build();
 
         TaskEntity thirdTask = TaskEntity.builder()
@@ -44,7 +46,7 @@ public class UserEventsListener {
                 .priority(TaskEntity.Priority.HIGH)
                 .status(TaskEntity.Status.NEW)
                 .createdDate(LocalDateTime.now())
-                .createdByUserId(1L)
+                .position(3D)
                 .assignedUserId(userId)
                 .build();
 
