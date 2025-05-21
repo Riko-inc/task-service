@@ -64,13 +64,11 @@ public class TaskSpecifications {
 
             if (direction == Sort.Direction.ASC) {
                 query.orderBy(
-                        cb.asc(statusOrder),
-                        cb.asc(root.get("taskId"))
+                        cb.asc(statusOrder)
                 );
             } else {
                 query.orderBy(
-                        cb.desc(statusOrder),
-                        cb.asc(root.get("taskId"))
+                        cb.desc(statusOrder)
                 );
             }
             return cb.conjunction();
@@ -86,15 +84,20 @@ public class TaskSpecifications {
             Expression<Integer> priorityOrder = priorityCase.otherwise(99);
             if (direction == Sort.Direction.ASC) {
                 query.orderBy(
-                        cb.asc(priorityOrder),
-                        cb.asc(root.get("taskId"))
+                        cb.asc(priorityOrder)
                 );
             } else {
                 query.orderBy(
-                        cb.desc(priorityOrder),
-                        cb.asc(root.get("taskId"))
+                        cb.desc(priorityOrder)
                 );
             }
+            return cb.conjunction();
+        };
+    }
+
+    public static Specification<TaskEntity> orderByPosition() {
+        return (root, query, cb) -> {
+                query.orderBy(cb.asc(root.get("position")));
             return cb.conjunction();
         };
     }

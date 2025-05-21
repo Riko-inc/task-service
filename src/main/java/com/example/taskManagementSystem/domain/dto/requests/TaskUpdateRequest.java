@@ -24,6 +24,9 @@ public class TaskUpdateRequest {
     @Schema(description = "Описание задачи", example = "Бренд: домик в деревне, главное не перепутать!")
     private String description;
 
+    @Schema(description = "Место, где находится задача", example = "1")
+    private Double position;
+
     @Schema(description = "Статус задачи", example = "NEW", defaultValue = "NEW")
     @NotNull(message = "Статус задачи не может быть пустым")
     private TaskEntity.Status status;

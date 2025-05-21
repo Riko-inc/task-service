@@ -46,12 +46,14 @@ public class TaskEntity {
 
     private String description;
 
+    private Double position;
+
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDateTime dueTo;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private Status status= Status.NEW;
+    private Status status = Status.NEW;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

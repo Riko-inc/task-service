@@ -19,6 +19,7 @@ public class TaskResponse {
     private String description;
     private long createdByUserId;
     private Long assignedToUserId;
+    private Double position;
     @Schema(type = "string")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
     private LocalDateTime dueTo;

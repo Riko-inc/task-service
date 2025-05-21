@@ -63,7 +63,10 @@ public class TaskServiceImpl implements TaskService {
                 .status(taskRequest.getStatus())
                 .createdDate(LocalDateTime.now())
                 .build();
-        return taskRepository.save(taskEntity);
+
+        TaskEntity newEntity = taskRepository.save(taskEntity);
+        newEntity.setPosition((double) taskEntity.getTaskId());
+        return taskRepository.save(newEntity);
     }
 
     @Override
@@ -92,6 +95,7 @@ public class TaskServiceImpl implements TaskService {
         taskEntity.setDescription(taskUpdateRequest.getDescription());
         taskEntity.setPriority(taskUpdateRequest.getPriority());
         taskEntity.setStatus(taskUpdateRequest.getStatus());
+        taskEntity.setPosition(taskUpdateRequest.getPosition());
         taskRepository.saveAndFlush(taskEntity);
 
         return taskEntity;
@@ -118,10 +122,6 @@ public class TaskServiceImpl implements TaskService {
 
         Sort sort = Sort.unsorted();
 
-        if (!sortField.equalsIgnoreCase("status") && !sortField.equalsIgnoreCase("priority")) {
-            sort = Sort.by(sortDirection, sortField).and(Sort.by(Sort.Direction.ASC, "taskId"));
-        }
-
         Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), sort);
         Specification<TaskEntity> specification = createSpecificationWithEnumOrder(sortField, sortDirection, request, userId);
 
@@ -134,9 +134,11 @@ public class TaskServiceImpl implements TaskService {
         if (sortField.equalsIgnoreCase("status")) {
             specification = specification.and(TaskSpecifications.orderByStatus(directionStr));
         }
+
         if (sortField.equalsIgnoreCase("priority")) {
             specification = specification.and(TaskSpecifications.orderByPriority(directionStr));
         }
+
         if (request.getStatus() != null && !request.getStatus().isEmpty()) {
             specification = specification.and(TaskSpecifications.hasStatuses(request.getStatus()));
         }
@@ -157,6 +159,7 @@ public class TaskServiceImpl implements TaskService {
             specification = specification.and(TaskSpecifications.inGivenTimePeriod(monthStart, monthEnd));
         }
 
+        specification = specification.and(TaskSpecifications.orderByPosition());
         specification = specification.and(TaskSpecifications.ownedOrAssignedToUser(userId));
         return specification;
     }
