@@ -1,9 +1,11 @@
 package com.example.taskManagementSystem.config;
 
 import com.example.taskManagementSystem.domain.dto.requests.TaskGetAllRequest;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +31,8 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import static com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator.instance;
+
 @Configuration
 @EnableCaching
 @RequiredArgsConstructor
@@ -42,18 +46,16 @@ public class RedisCacheConfig {
     private final Jackson2ObjectMapperBuilder jacksonBuilder;
 
     @Bean
-    public Module javaTimeModule() {
+    public static Module javaTimeModule() {
         return new JavaTimeModule();
     }
 
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
-        ObjectMapper redisMapper = jacksonBuilder
-                .createXmlMapper(false)
-                .build()
-                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
+        ObjectMapper redisMapper = new ObjectMapper();
+        redisMapper.registerModule(new JavaTimeModule());
+        redisMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         GenericJackson2JsonRedisSerializer redisSerializer =
                 new GenericJackson2JsonRedisSerializer(redisMapper);
 
@@ -67,21 +69,24 @@ public class RedisCacheConfig {
     }
 
     @Bean
-    public CacheManager cacheManager(RedisTemplate<String, Object> redisTemplate) {
+    public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper.activateDefaultTyping(instance, ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
+        GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(mapper);
+
         RedisCacheConfiguration cfg = RedisCacheConfiguration.defaultCacheConfig()
                 .prefixCacheNameWith(cachePrefix)
                 .entryTtl(Duration.ofMinutes(30))
                 .disableCachingNullValues()
                 .serializeValuesWith(
-                        RedisSerializationContext.SerializationPair.fromSerializer(
-                                redisTemplate.getValueSerializer()
-                        )
+                        RedisSerializationContext.SerializationPair.fromSerializer(serializer)
                 );
         return RedisCacheManager.builder(connectionFactory)
                 .cacheDefaults(cfg)
                 .build();
     }
-
     @Bean
     public KeyGenerator taskListKeyGenerator() {
         return (target, method, params) -> {
