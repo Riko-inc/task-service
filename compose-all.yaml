@@ -63,6 +63,7 @@ services:
       timeout: 5s
       retries: 5
       start_period: 20s
+
   kafka:
     image: 'bitnami/kafka:3.8'
     environment:

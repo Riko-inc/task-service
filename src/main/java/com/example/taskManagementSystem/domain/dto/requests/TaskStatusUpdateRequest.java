@@ -16,3 +16,5 @@ public class TaskStatusUpdateRequest {
     @NotNull(message = "Статус задачи не может быть пустым")
     private TaskEntity.Status status;
 }
+
+
