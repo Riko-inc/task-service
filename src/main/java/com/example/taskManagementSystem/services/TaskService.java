@@ -44,12 +44,12 @@ public interface TaskService {
     TaskEntity getTaskById(long id);
 
     /**
-     * Получает список всех задач пользователя - созданных им и тех, которые ему назначены.
+     * Получает список всех задач в пространстве
      *
-     * @param userId            UserEntity, которому принадлежат задачи
+     * @param user            UserEntity, отправивший запрос
      * @return список {@link TaskEntity}, сохранённый в базе данных
      */
-    List<TaskEntity> getAllTasksByUserId(Long userId, TaskGetAllRequest request);
+    List<TaskEntity> getAllTasksInSpace(UserEntity user, TaskGetAllRequest request);
 
     /**
      * Удаляет задачу по её id. Может быть удалена только автором задачи

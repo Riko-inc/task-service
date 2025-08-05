@@ -65,6 +65,7 @@ public class TaskServiceImpl implements TaskService {
         TaskEntity taskEntity = TaskEntity.builder()
                 .title(taskRequest.getTitle())
                 .description(taskRequest.getDescription())
+                .spaceId(taskRequest.getSpaceId())
                 .dueTo(taskRequest.getDueTo())
                 .priority(taskRequest.getPriority())
                 .createdByUserId(user.getUserId())
@@ -122,25 +123,24 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     @Cacheable(value = "taskLists",
-               keyGenerator = "taskListKeyGenerator")
-    public List<TaskEntity> getAllTasksByUserId(Long userId, TaskGetAllRequest request) {
+            keyGenerator = "taskListKeyGenerator") // TODO: Добавить проверку, что пользователь имеет право просмотра задач в пространстве
+    public List<TaskEntity> getAllTasksInSpace(UserEntity user, TaskGetAllRequest request) {
         String[] sortParams = request.getSort().split("\\s*,\\s*");
         if (sortParams.length != 2) {
             throw new InvalidRequestParameterException("Invalid sort parameter format");
         }
-
         String sortField = sortParams[0];
         Sort.Direction sortDirection = Sort.Direction.fromString(sortParams[1]);
 
         Sort sort = Sort.unsorted();
 
         Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), sort);
-        Specification<TaskEntity> specification = createSpecificationWithEnumOrder(sortField, sortDirection, request, userId);
+        Specification<TaskEntity> specification = createSpecificationWithEnumOrder(sortField, sortDirection, request);
 
         return taskRepository.findAll(specification, pageable).getContent();
     }
 
-    private Specification<TaskEntity> createSpecificationWithEnumOrder(String sortField, Sort.Direction directionStr, TaskGetAllRequest request, Long userId) {
+    private Specification<TaskEntity> createSpecificationWithEnumOrder(String sortField, Sort.Direction directionStr, TaskGetAllRequest request) {
         Specification<TaskEntity> specification = Specification.where(null);
 
         if (sortField.equalsIgnoreCase("status")) {
@@ -172,7 +172,7 @@ public class TaskServiceImpl implements TaskService {
         }
 
         specification = specification.and(TaskSpecifications.orderByPosition());
-        specification = specification.and(TaskSpecifications.ownedOrAssignedToUser(userId));
+        specification = specification.and(TaskSpecifications.inSpace(request.getSpaceId()));
         return specification;
     }
 

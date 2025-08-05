@@ -32,6 +32,11 @@ public class TaskSpecifications {
         );
     }
 
+    public static Specification<TaskEntity> inSpace(long spaceId) {
+        return (root, query, cb) ->
+            cb.equal(root.get("spaceId"), spaceId);
+    }
+
     public static Specification<TaskEntity> ownedByUsers(List<Long> userIds) {
         return (root, query, cb) -> {
             if (userIds == null || userIds.isEmpty()) {
