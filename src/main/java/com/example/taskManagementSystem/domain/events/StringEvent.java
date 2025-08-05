@@ -1,13 +1,14 @@
 package com.example.taskManagementSystem.domain.events;
 
+import com.example.taskManagementSystem.domain.enums.EventType;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonTypeName("stringEvent")

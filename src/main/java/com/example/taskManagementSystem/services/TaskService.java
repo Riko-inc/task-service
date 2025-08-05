@@ -5,6 +5,7 @@ import com.example.taskManagementSystem.domain.dto.requests.TaskGetAllRequest;
 import com.example.taskManagementSystem.domain.dto.requests.TaskUpdateRequest;
 import com.example.taskManagementSystem.domain.entities.TaskEntity;
 import com.example.taskManagementSystem.domain.entities.UserEntity;
+import com.example.taskManagementSystem.domain.enums.TaskStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -65,7 +66,7 @@ public interface TaskService {
      * @param taskId     id задачи, статус которой нужно изменить
      * @param taskStatus Новый статус задачи
      * @return {@link TaskEntity} сохранённый в базе данных
-     * @see TaskEntity.Status
+     * @see TaskStatus
      */
-    TaskEntity updateTaskStatus(long taskId, TaskEntity.Status taskStatus);
+    TaskEntity updateTaskStatus(long taskId, TaskStatus taskStatus);
 }

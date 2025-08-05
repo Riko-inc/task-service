@@ -1,6 +1,7 @@
 package com.example.taskManagementSystem.domain.dto.requests;
 
-import com.example.taskManagementSystem.domain.entities.TaskEntity;
+import com.example.taskManagementSystem.domain.enums.TaskPriority;
+import com.example.taskManagementSystem.domain.enums.TaskStatus;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
@@ -24,6 +25,10 @@ public class TaskGetAllRequest {
     @Schema(description = "Размер страницы", defaultValue = "50", example = "50")
     private Integer size = 50;
 
+    @Schema(description = "Id пространства, в котором располагается задача", example = "1")
+    @NotNull(message = "id пространства не может быть пустым")
+    private Long spaceId;
+
     @Schema(
             description = "Поле и направление сортировки (формат: поле,направление)",
             defaultValue = "taskId,asc",
@@ -32,22 +37,22 @@ public class TaskGetAllRequest {
     private String sort = "taskId,asc";
 
     @ArraySchema(
-            schema = @Schema(implementation = TaskEntity.Status.class),
+            schema = @Schema(implementation = TaskStatus.class),
             arraySchema = @Schema(
                     description = "Фильтр по статусам задач. Можно указать несколько значений.",
                     example = "[\"NEW\",\"IN_PROGRESS\"]"
             )
     )
-    private List<TaskEntity.Status> status;
+    private List<TaskStatus> status;
 
     @ArraySchema(
-            schema = @Schema(implementation = TaskEntity.Priority.class),
+            schema = @Schema(implementation = TaskPriority.class),
             arraySchema = @Schema(
                     description = "Фильтр по приоритетам задач. Можно указать несколько значений.",
                     example = "[\"HIGH\",\"MEDIUM\",\"LOW\",\"DEFAULT\"]"
             )
     )
-    private List<TaskEntity.Priority> priority;
+    private List<TaskPriority> priority;
 
     @ArraySchema(
             schema = @Schema(type = "integer", format = "int64"),

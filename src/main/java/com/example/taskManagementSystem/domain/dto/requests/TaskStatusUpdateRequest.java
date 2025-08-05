@@ -1,6 +1,7 @@
 package com.example.taskManagementSystem.domain.dto.requests;
 
 import com.example.taskManagementSystem.domain.entities.TaskEntity;
+import com.example.taskManagementSystem.domain.enums.TaskStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -14,7 +15,7 @@ public class TaskStatusUpdateRequest {
 
     @Schema(description = "Статус задачи", example = "NEW")
     @NotNull(message = "Статус задачи не может быть пустым")
-    private TaskEntity.Status status;
+    private TaskStatus status;
 }
 
 
