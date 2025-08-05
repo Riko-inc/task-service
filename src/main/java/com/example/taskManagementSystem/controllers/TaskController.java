@@ -40,11 +40,11 @@ public class TaskController {
         return new ResponseEntity<>(taskMapper.mapToDto(savedTaskEntity), HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Получить список задач пользователя по userId (Назначенные ему и созданные им)")
+    @Operation(summary = "Получить список задач в пространстве")
     @SecurityRequirement(name = "JWT")
-    @GetMapping(path = "/tasks/{id}")
-    public ResponseEntity<List<TaskResponse>> getAllTasksOfUserById(@PathVariable Long id, @Valid TaskGetAllRequest request) {
-        List<TaskEntity> queryResult = taskService.getAllTasksByUserId(id, request);
+    @GetMapping(path = "/task")
+    public ResponseEntity<List<TaskResponse>> getAllTasksInSpace(@AuthenticationPrincipal UserEntity user, @Valid TaskGetAllRequest request) {
+        List<TaskEntity> queryResult = taskService.getAllTasksInSpace(user, request);
         return new ResponseEntity<>(queryResult.stream().map(taskMapper::mapToDto).toList(), HttpStatus.OK);
     }
 

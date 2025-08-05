@@ -1,6 +1,7 @@
 package com.example.taskManagementSystem.config;
 
 import com.example.taskManagementSystem.domain.dto.requests.TaskGetAllRequest;
+import com.example.taskManagementSystem.domain.entities.UserEntity;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.Module;
@@ -90,7 +91,8 @@ public class RedisCacheConfig {
     @Bean
     public KeyGenerator taskListKeyGenerator() {
         return (target, method, params) -> {
-            Long userId = (Long) params[0];
+            UserEntity userEntity = (UserEntity) params[0];
+            Long userId = userEntity.getUserId();
             TaskGetAllRequest req = (TaskGetAllRequest) params[1];
             return "taskList::" + userId + "::" + req.hashCode();
         };
