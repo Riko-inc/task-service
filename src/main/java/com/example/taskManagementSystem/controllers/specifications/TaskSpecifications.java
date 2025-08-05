@@ -1,4 +1,6 @@
 package com.example.taskManagementSystem.controllers.specifications;
+import com.example.taskManagementSystem.domain.enums.TaskPriority;
+import com.example.taskManagementSystem.domain.enums.TaskStatus;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Expression;
 import org.springframework.data.domain.Sort;
@@ -9,14 +11,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class TaskSpecifications {
-    public static Specification<TaskEntity> hasStatuses(List<TaskEntity.Status> statuses) {
+    public static Specification<TaskEntity> hasStatuses(List<TaskStatus> statuses) {
         return (root, query, cb) ->
                 statuses == null || statuses.isEmpty()
                         ? cb.conjunction()
                         : root.get("status").in(statuses);
     }
 
-    public static Specification<TaskEntity> hasPriorities(List<TaskEntity.Priority> priorities) {
+    public static Specification<TaskEntity> hasPriorities(List<TaskPriority> priorities) {
         return (root, query, cb) ->
                 priorities == null || priorities.isEmpty()
                         ? cb.conjunction()
@@ -57,7 +59,7 @@ public class TaskSpecifications {
     public static Specification<TaskEntity> orderByStatus(Sort.Direction direction) {
         return (root, query, cb) -> {
             CriteriaBuilder.Case<Integer> statusCase = cb.selectCase();
-            for (TaskEntity.Status status : TaskEntity.Status.values()) {
+            for (TaskStatus status : TaskStatus.values()) {
                 statusCase = statusCase.when(cb.equal(root.get("status"), status.name()), status.getOrder());
             }
             Expression<Integer> statusOrder = statusCase.otherwise(99);
@@ -78,7 +80,7 @@ public class TaskSpecifications {
     public static Specification<TaskEntity> orderByPriority(Sort.Direction direction) {
         return (root, query, cb) -> {
             CriteriaBuilder.Case<Integer> priorityCase = cb.selectCase();
-            for (TaskEntity.Priority priority : TaskEntity.Priority.values()) {
+            for (TaskPriority priority : TaskPriority.values()) {
                 priorityCase = priorityCase.when(cb.equal(root.get("priority"), priority.name()), priority.getOrder());
             }
             Expression<Integer> priorityOrder = priorityCase.otherwise(99);

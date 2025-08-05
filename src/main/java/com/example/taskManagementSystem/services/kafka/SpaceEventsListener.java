@@ -1,8 +1,10 @@
 package com.example.taskManagementSystem.services.kafka;
 
 import com.example.taskManagementSystem.domain.entities.TaskEntity;
-import com.example.taskManagementSystem.domain.events.StringEvent;
-import com.example.taskManagementSystem.domain.events.UserCreatedEvent;
+import com.example.taskManagementSystem.domain.enums.TaskPriority;
+import com.example.taskManagementSystem.domain.enums.TaskStatus;
+import com.example.taskManagementSystem.domain.events.GenericEventMessage;
+import com.example.taskManagementSystem.domain.events.dto.WorkspaceDto;
 import com.example.taskManagementSystem.repositories.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,39 +17,40 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class UserEventsListener {
+public class SpaceEventsListener {
 
     private final TaskRepository taskRepository;
 
-    @KafkaListener(topics = "user-events", groupId = "task-service")
-    public void handleUserCreated(StringEvent event) {
+    @KafkaListener(topics = "space-events", groupId = "task-service")
+    public void handleUserCreated(GenericEventMessage<WorkspaceDto> event) {
         log.info("event type: {} \n payload: {}", event.getEventType(), event.getPayload());
-        Long userId = Long.valueOf(event.getPayload());
+        WorkspaceDto dto = event.getPayload();
         TaskEntity firstTask = TaskEntity.builder()
-                .createdByUserId(userId)
+                .createdByUserId(dto.getMembers().getFirst().getSpaceMemberId())
                 .title("Твоя первая задача - всегда помнить про первую задачу бойцовского клуба")
-                .priority(TaskEntity.Priority.MEDIUM)
-                .status(TaskEntity.Status.COMPLETE)
-                .createdDate(LocalDateTime.now())
+                .priority(TaskPriority.MEDIUM)
+                .status(TaskStatus.COMPLETE)
+                .createdDateTime(LocalDateTime.now())
                 .position(1D)
                 .build();
 
         TaskEntity secondTask = TaskEntity.builder()
-                .createdByUserId(userId)
+                .createdByUserId(dto.getMembers().getFirst().getSpaceMemberId())
                 .title("Вторая задача - всегда помнить про первую задачу!")
-                .priority(TaskEntity.Priority.LOW)
-                .status(TaskEntity.Status.IN_PROGRESS)
-                .createdDate(LocalDateTime.now())
+                .priority(TaskPriority.LOW)
+                .status(TaskStatus.IN_PROGRESS)
+                .createdDateTime(LocalDateTime.now())
                 .position(2D)
                 .build();
 
         TaskEntity thirdTask = TaskEntity.builder()
+                .createdByUserId(dto.getMembers().getFirst().getSpaceMemberId())
                 .title("Ну и третья задача - сгоняй Максу за пивом, он вам всё-таки кафку прикрутил")
-                .priority(TaskEntity.Priority.HIGH)
-                .status(TaskEntity.Status.NEW)
-                .createdDate(LocalDateTime.now())
+                .priority(TaskPriority.HIGH)
+                .status(TaskStatus.NEW)
+                .createdDateTime(LocalDateTime.now())
                 .position(3D)
-                .assignedUserId(userId)
+                .assignedUserId(dto.getMembers().getFirst().getSpaceMemberId())
                 .build();
 
         taskRepository.saveAll(List.of(firstTask, secondTask, thirdTask));

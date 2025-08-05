@@ -41,7 +41,7 @@ public class AccessServiceTest {
 
         TaskEntity taskEntity = new TaskEntity();
         taskEntity.setCreatedByUserId(userEntity.getUserId());
-        taskEntity.setCreatedDate(LocalDateTime.now());
+        taskEntity.setCreatedDateTime(LocalDateTime.now());
 
         when(taskRepository.findById(1L)).thenReturn(Optional.of(taskEntity));
 
@@ -57,7 +57,7 @@ public class AccessServiceTest {
         TaskEntity taskEntity = new TaskEntity();
         taskEntity.setCreatedByUserId(userEntity.getUserId());
         taskEntity.setAssignedUserId(userEntity.getUserId());
-        taskEntity.setCreatedDate(LocalDateTime.now());
+        taskEntity.setCreatedDateTime(LocalDateTime.now());
 
         when(taskRepository.findById(1L)).thenReturn(Optional.of(taskEntity));
 

@@ -1,5 +1,7 @@
 package com.example.taskManagementSystem.domain.dto.requests;
 import com.example.taskManagementSystem.domain.entities.TaskEntity;
+import com.example.taskManagementSystem.domain.enums.TaskPriority;
+import com.example.taskManagementSystem.domain.enums.TaskStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -29,11 +31,11 @@ public class TaskUpdateRequest {
 
     @Schema(description = "Статус задачи", example = "NEW", defaultValue = "NEW")
     @NotNull(message = "Статус задачи не может быть пустым")
-    private TaskEntity.Status status;
+    private TaskStatus status;
 
     @Schema(description = "Приоритет задачи", example = "LOW", defaultValue = "DEFAULT")
     @NotNull(message = "Приоритет задачи не может быть пустым")
-    private TaskEntity.Priority priority;
+    private TaskPriority priority;
 
     @Schema(description = "Id пользователя, кому назначена задача", example = "1")
     private Long assignedToUserId;
