@@ -34,7 +34,7 @@ public class TaskRelationController {
         return new ResponseEntity<>(taskRelationService.createTaskRelation(request), HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Получить все отношения для задачи")
+    @Operation(summary = "Получить все отношения задачи, в которых она является родительской")
     @SecurityRequirement(name = "JWT")
     @GetMapping("/{taskId}")
     public ResponseEntity<List<TaskRelationResponse>> getTaskRelations(@AuthenticationPrincipal UserEntity user,

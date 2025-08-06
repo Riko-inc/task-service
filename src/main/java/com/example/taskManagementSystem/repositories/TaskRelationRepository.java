@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface TaskRelationRepository extends JpaRepository<TaskRelationEntity, Long>, JpaSpecificationExecutor<TaskRelationEntity> {
     List<TaskRelationEntity> findAllByFromTaskIdOrToTaskId(long fromTaskId, long toTaskId);
+    List<TaskRelationEntity> findAllByFromTaskId(long fromTaskId);
 }

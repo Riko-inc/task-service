@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 @Builder
 public class CommentDto {
     private long commentId;
-    private Long createdByUserId;
-    private long parentTaskId;
+    private Long authorId;
+    private long taskId;
     private String content;
     @Schema(type = "string")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")

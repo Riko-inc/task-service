@@ -5,6 +5,7 @@ import com.example.taskManagementSystem.domain.dto.requests.TaskRelationUpdateRe
 import com.example.taskManagementSystem.domain.dto.responses.TaskRelationResponse;
 import com.example.taskManagementSystem.domain.entities.TaskEntity;
 import com.example.taskManagementSystem.domain.entities.TaskRelationEntity;
+import com.example.taskManagementSystem.domain.enums.RelationType;
 import com.example.taskManagementSystem.exceptions.EntityNotFoundException;
 import com.example.taskManagementSystem.exceptions.InvalidRequestParameterException;
 import com.example.taskManagementSystem.mappers.impl.TaskRelationCreateMapperImpl;
@@ -36,7 +37,7 @@ public class TaskRelationServiceImpl implements TaskRelationService {
 
     @Override
     public List<TaskRelationResponse> getTaskRelations(Long taskId) {
-        List<TaskRelationEntity> relations = taskRelationRepository.findAllByFromTaskIdOrToTaskId(taskId, taskId);
+        List<TaskRelationEntity> relations = taskRelationRepository.findAllByFromTaskId(taskId);
         return relations.stream().map(taskRelationResponseMapper::mapToDto).toList();
     }
 
@@ -49,8 +50,15 @@ public class TaskRelationServiceImpl implements TaskRelationService {
             throw new EntityNotFoundException("Some of the given tasks does not exist");
         }
 
-        TaskRelationEntity taskRelationEntity = taskRelationCreateMapper.mapFromDto(request);
-        return taskRelationResponseMapper.mapToDto(taskRelationRepository.save(taskRelationEntity));
+        TaskRelationEntity taskRelationEntityFrom = taskRelationCreateMapper.mapFromDto(request);
+
+        request.setFromTaskId(taskRelationEntityFrom.getToTaskId());
+        request.setToTaskId(taskRelationEntityFrom.getFromTaskId());
+        request.setRelation(RelationType.getOpposite(request.getRelation()));
+        TaskRelationEntity taskRelationEntityTo = taskRelationCreateMapper.mapFromDto(request);
+        taskRelationRepository.save(taskRelationEntityTo);
+
+        return taskRelationResponseMapper.mapToDto(taskRelationRepository.save(taskRelationEntityFrom));
     }
 
     public TaskRelationResponse updateTaskRelation(TaskRelationUpdateRequest request) {
@@ -80,6 +88,4 @@ public class TaskRelationServiceImpl implements TaskRelationService {
     public void deleteTaskRelation(Long taskRelationId) {
 
     }
-
-
 }

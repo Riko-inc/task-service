@@ -25,7 +25,7 @@ public class CommentEntity {
     private long commentId;
 
     // TODO: make cascade operations
-    @JoinColumn(name = "author_id", nullable = true)
+    @JoinColumn(name = "author_id")
     private Long authorId;
 
     @Column(nullable = false)

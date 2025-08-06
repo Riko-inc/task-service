@@ -29,7 +29,7 @@ public enum RelationType {
         this.relationId = relationId;
     }
 
-    public RelationType getOpposite() {
-        return OPPOSITES.get(this);
+    public static RelationType getOpposite(RelationType relationType) {
+        return OPPOSITES.get(relationType);
     }
 }

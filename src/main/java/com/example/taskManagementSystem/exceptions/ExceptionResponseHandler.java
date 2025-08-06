@@ -18,6 +18,16 @@ import java.util.UUID;
 @RestControllerAdvice
 public class ExceptionResponseHandler {
 
+    @ExceptionHandler({EntityNotFoundException.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleEntityNotFoundException(EntityNotFoundException exception) {
+        return ErrorResponse.builder()
+                .id(UUID.randomUUID())
+                .message(exception.getMessage())
+                .params(exception.getParams())
+                .build();
+    }
+
     @ExceptionHandler({TaskManagementServiceException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleAccessDeniedException(TaskManagementServiceException exception) {
