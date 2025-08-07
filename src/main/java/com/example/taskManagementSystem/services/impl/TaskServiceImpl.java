@@ -8,12 +8,16 @@ import com.example.taskManagementSystem.domain.entities.TaskEntity;
 import com.example.taskManagementSystem.domain.entities.UserEntity;
 import com.example.taskManagementSystem.domain.enums.TaskPriority;
 import com.example.taskManagementSystem.domain.enums.TaskStatus;
+import com.example.taskManagementSystem.domain.events.enums.SpaceMemberRole;
+import com.example.taskManagementSystem.exceptions.AccessDeniedException;
 import com.example.taskManagementSystem.exceptions.EntityNotFoundException;
 import com.example.taskManagementSystem.exceptions.InvalidRequestParameterException;
 import com.example.taskManagementSystem.repositories.TaskRepository;
 import com.example.taskManagementSystem.services.AuthClientService;
+import com.example.taskManagementSystem.services.SpaceClientService;
 import com.example.taskManagementSystem.services.TaskService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -38,9 +42,11 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final AuthClientService authService;
+    private final SpaceClientService spaceService;
 
     @Override
     @Transactional
@@ -60,6 +66,16 @@ public class TaskServiceImpl implements TaskService {
 
         if (taskRequest.getAssignedToUserId() != null && !authService.checkUserIdExists(taskRequest.getAssignedToUserId())) {
             throw new EntityNotFoundException("Assigned user with id " + taskRequest.getAssignedToUserId() + " was not found");
+        }
+
+        log.info("\nCreating task {} \nBy userId {} \nWith role {} \nIn space {}",
+                taskRequest.getTitle(),
+                user.getUserId(),
+                spaceService.findUserBySpaceId(taskRequest.getSpaceId()).getRole(),
+                taskRequest.getSpaceId());
+
+        if (spaceService.findUserBySpaceId(taskRequest.getSpaceId()).getRole().equals(SpaceMemberRole.READER)) {
+            throw new AccessDeniedException("User have insufficient space role");
         }
 
         TaskEntity taskEntity = TaskEntity.builder()

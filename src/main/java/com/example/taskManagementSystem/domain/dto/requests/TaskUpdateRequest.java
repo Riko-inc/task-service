@@ -1,5 +1,4 @@
 package com.example.taskManagementSystem.domain.dto.requests;
-import com.example.taskManagementSystem.domain.entities.TaskEntity;
 import com.example.taskManagementSystem.domain.enums.TaskPriority;
 import com.example.taskManagementSystem.domain.enums.TaskStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -12,7 +11,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-@Schema(description = "Запрос на создание новой задачи")
+@Schema(description = "Запрос на обновление задачи")
 public class TaskUpdateRequest {
     @Schema(description = "Id задачи", example = "1")
     @NotNull(message = "Id задачи обязателен")

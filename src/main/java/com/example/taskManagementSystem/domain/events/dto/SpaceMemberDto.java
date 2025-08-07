@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class SpaceMemberDto {
     private Long spaceMemberId;
     private Long userId;                    // Совпадает с userId из auth-service
-    private SpaceMemberRole spaceMemberRole;
+    private SpaceMemberRole role;
     private LocalDateTime invitedDateTime;
     private Long invitedBySpaceMemberId;
     private Long workspaceId;

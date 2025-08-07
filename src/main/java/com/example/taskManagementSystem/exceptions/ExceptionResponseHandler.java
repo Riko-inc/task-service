@@ -18,6 +18,16 @@ import java.util.UUID;
 @RestControllerAdvice
 public class ExceptionResponseHandler {
 
+    @ExceptionHandler({AccessDeniedException.class})
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleAccessDeniedException(AccessDeniedException exception) {
+        return ErrorResponse.builder()
+                .id(UUID.randomUUID())
+                .message(exception.getMessage())
+                .params(exception.getParams())
+                .build();
+    }
+
     @ExceptionHandler({EntityNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleEntityNotFoundException(EntityNotFoundException exception) {
